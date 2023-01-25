@@ -119,7 +119,7 @@
 \vspace{1cm}
 
 \begin{center}
-\begin{filecontents*}[overwrite]{parrot.csv}
+\begin{filecontents*}[overwrite]{test1.csv}
 -,-,-,-,-,-,4,4,4,4,-,-,-,-,-,-
 -,-,-,-,4,4,1,1,1,1,4,4,-,-,-,-
 -,-,-,4,1,1,1,1,1,1,1,1,4,-,-,-
@@ -145,11 +145,11 @@
 -,-,-,-,-,-,-,4,4,-,-,-,-,-,-,-
 \end{filecontents*}
 
-\PixlArtTikz[Codes=123469,Style=\ttfamily,Unit=0.35]{parrot.csv}
+\PixlArtTikz[Codes=123469,Style=\ttfamily,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Symbols={A,B,C,D,E,F},Symb,Style=\ttfamily,Unit=0.35]{parrot.csv}
+\PixlArtTikz[Codes=123469,Symbols={A,B,C,D,E,F},Symb,Style=\ttfamily,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35]{parrot.csv}
+\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35]{test1.csv}
 \end{center}
 
 \vspace{0.5cm}
@@ -308,7 +308,7 @@ We can begin by creating the file \textsf{csv}, directly within the \textsf{tex}
 
 \begin{PresentationCode}{}
 %creation of the csv
-\begin{filecontents*}[overwrite]{basic.csv}
+\begin{filecontents*}[overwrite]{base.csv}
 	A,B,C,D
 	A,B,D,C
 	B,A,D,C
@@ -327,13 +327,13 @@ We can begin by creating the file \textsf{csv}, directly within the \textsf{tex}
 	\end{tblr}
 \end{center}
 
-\PixlArtTikz[Codes=ABCD,Style=\large\sffamily,Unit=0.85]{basic.csv}
+\PixlArtTikz[Codes=ABCD,Style=\large\sffamily,Unit=0.85]{base.csv}
 ~~
-\PixlArtTikz[Codes=ABCD,Symbols={45,22,1,7},Symb,Style=\large\sffamily,Unit=0.85]{basic.csv}
+\PixlArtTikz[Codes=ABCD,Symbols={45,22,1,7},Symb,Style=\large\sffamily,Unit=0.85]{base.csv}
 ~~
-\PixlArtTikz[Codes=ABCD,Colors={black,green,yellow,red},Correction,Unit=0.85]{basic.csv}
+\PixlArtTikz[Codes=ABCD,Colors={black,green,yellow,red},Correction,Unit=0.85]{base.csv}
 ~~
-\PixlArtTikz[Codes=ABCD,Colors={black,green,yellow,red},Correction,Border=false,Unit=0.85]{basic.csv}
+\PixlArtTikz[Codes=ABCD,Colors={black,green,yellow,red},Correction,Border=false,Unit=0.85]{base.csv}
 \end{PresentationCode}
 
 \pagebreak
@@ -365,7 +365,7 @@ The third argument, \textit{mandatory}, is the filename of the \textsf{csv}.
 
 \begin{PresentationCode}{}
 %creation of the csv
-\begin{filecontents*}[overwrite]{parrot.csv}
+\begin{filecontents*}[overwrite]{test1.csv}
 	-,-,-,-,-,-,4,4,4,4,-,-,-,-,-,-
 	-,-,-,-,4,4,1,1,1,1,4,4,-,-,-,-
 	-,-,-,4,1,1,1,1,1,1,1,1,4,-,-,-
@@ -395,11 +395,11 @@ The third argument, \textit{mandatory}, is the filename of the \textsf{csv}.
 \begin{PresentationCode}{}
 %simple codes
 %empty case with -
-\PixlArtTikz[Codes=123469,Style=\ttfamily,Unit=0.35]{parrot.csv}
+\PixlArtTikz[Codes=123469,Style=\ttfamily,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35]{parrot.csv}
+\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35,Border=false]{parrot.csv}
+\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35,Border=false]{test1.csv}
 \end{PresentationCode}
 
 \pagebreak
@@ -464,7 +464,7 @@ In this case :
 		\foreach \y in {0,-1,...,-24} \draw[very thin,gray] (3pt,\y)--(-3pt,\y)%
 		node[left,font=\scriptsize\sffamily] {\y} ;
 		%le PixelArt
-		\PixlArtTikz*[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction]{parrot.csv}
+		\PixlArtTikz*[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction]{test1.csv}
 		%added code
 		\filldraw[Blue] (14,-1) circle[radius=1] ;
 		\filldraw[Yellow] (14,-1) circle[radius=0.8] ;
@@ -519,7 +519,7 @@ The symbols are at the nodes $(c\,;\,-l)$ where $l$ and $c$ are the row and colu
 \begin{center}
 	\begin{EnvPixlArtTikz}%
 			[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.25]
-			{parrot.csv}
+			{test1.csv}
 		\filldraw[Blue] (14,-1) circle[radius=1] ;
 		\filldraw[Yellow] (14,-1) circle[radius=0.8] ;
 		\draw[ForestGreen,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
