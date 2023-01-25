@@ -1,0 +1,313 @@
+% Author.........: C. Pierquet
+% licence........: Released under the LaTeX Project Public License v1.3c or later, see http://www.latex-project.org/lppl.txtf
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{PixelArtTikz}[2023/01/25 v0.1.0 PixelArts with csv and TikZ]
+% 0.1.0		Version initiale
+
+%------Option(s)
+\newif\if@csvii \@csviifalse
+\DeclareOption{csvii}{\@csviitrue}
+\DeclareOption*{}
+\ProcessOptions\relax
+
+%------Packages utiles
+\RequirePackage{tikz}
+\RequirePackage{xparse}
+\RequirePackage{simplekv}
+\RequirePackage{xintexpr}
+\RequirePackage{xinttools}
+\RequirePackage{xstring}
+\RequirePackage{listofitems}
+%librairies tikz
+%\usetikzlibrary{calc,shapes.geometric}
+%cvs
+\if@csvii
+	\RequirePackage[legacy]{csvsimple}
+\else
+	\RequirePackage{expl3}
+	\RequirePackage[l3]{csvsimple}
+\fi
+
+%------clés [fr] / keys [en]
+\defKV[pixelarttkz]{%
+	Codes=\def\PATlettres{#1},%
+	Couleurs=\def\PATcouleurs{#1},%
+	Symboles=\def\PATchiffres{#1},%
+	Style=\def\PATtaille{#1},%
+	Unite=\def\PATunit{#1}
+}
+
+\setKVdefault[pixelarttkz]{%
+	Style=\scriptsize,%
+	Correction=false,%
+	Symb=false,%
+	BordCases=true,%
+	Unite=1
+}
+
+%----[fr] commands
+\NewDocumentCommand\PixelArtTikz{ s O{} D<>{} m }{%commande autonome
+	\useKVdefault[pixelarttkz]%
+	\setKV[pixelarttkz]{#2}%
+	%affichage du corrigé / display of correction
+	\IfBooleanTF{#1}{}{\begin{tikzpicture}[x=\PATunit cm,y=\PATunit cm,#3]}
+	\ifboolKV[pixelarttkz]{Correction}%
+	{%
+		\csvloop{file=#4,no head,command={%
+			\foreach \l [count=\n] in \csvline {%
+				\StrDel{\l}{ }[\l]
+				\setsepchar{,}
+				\readlist*\LCPA\PATcouleurs
+				\StrPosition{\PATlettres}{\l}[\pixcnt]%
+				\xintifboolexpr{\pixcnt>0}%
+					{%
+						\itemtomacro\LCPA[\pixcnt]\pixcol%
+						\ifboolKV[pixelarttkz]{BordCases}%
+							{\draw[fill=\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+							{\filldraw[\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+					}%
+					{}%
+				}%
+			}%
+		}%
+	}%
+	{%
+		\ifboolKV[pixelarttkz]{Symb}{%affichage du pixelart versions chiffres si besoin
+			\csvloop{file=#4,no head,command={%
+				\foreach \l [count=\n] in \csvline {%
+					\StrDel{\l}{ }[\l]
+					\setsepchar{,}
+					\readlist*\LCNA\PATchiffres
+					\StrPosition{\PATlettres}{\l}[\pixpos]%
+					\xintifboolexpr{\pixpos>0}%
+						{%
+							\itemtomacro\LCNA[\pixpos]\pixchf%
+							\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\pixchf} ;%
+						}%
+						{}%
+					}%
+				}%
+			}%
+		}%
+		{%affichage du pixelart versions lettres ou chiffres simples (<=9) / display of letters/symbols PixelArt
+			\csvloop{file=#4,no head,command={%
+				\foreach \l [count=\n] in \csvline {%
+					\StrDel{\l}{ }[\l]
+					\IfSubStr{\PATlettres}{\l}%
+						{%
+							\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\l};%
+						}%
+						{}%
+					}%
+				}%
+			}%
+		}%
+	}%
+	\IfBooleanTF{#1}{}{\end{tikzpicture}}%
+}
+
+\NewDocumentEnvironment{EnvPixelArtTikz}{ O{} D<>{} m }%environnement
+{%
+	\useKVdefault[pixelarttkz]%
+	\setKV[pixelarttkz]{#1}%
+	%affichage du corrigé / display of correction
+	\begin{tikzpicture}[x=\PATunit cm,y=\PATunit cm,#2]
+		\ifboolKV[pixelarttkz]{Correction}%
+		{%
+			\csvloop{file=#3,no head,command={%
+				\foreach \l [count=\n] in \csvline {%
+					\StrDel{\l}{ }[\l]
+					\setsepchar{,}
+					\readlist*\LCPA\PATcouleurs
+					\StrPosition{\PATlettres}{\l}[\pixcnt]%
+					\xintifboolexpr{\pixcnt>0}%
+						{%
+							\itemtomacro\LCPA[\pixcnt]\pixcol%
+							\ifboolKV[pixelarttkz]{BordCases}%
+								{\draw[fill=\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+								{\filldraw[\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+						}%
+						{}%
+					}%
+				}%
+			}%
+		}%
+		{%
+			\ifboolKV[pixelarttkz]{Symb}{%affichage du pixelart versions chiffres si besoin
+				\csvloop{file=#3,no head,command={%
+					\foreach \l [count=\n] in \csvline {%
+						\StrDel{\l}{ }[\l]
+						\setsepchar{,}
+						\readlist*\LCNA\PATchiffres
+						\StrPosition{\PATlettres}{\l}[\pixpos]%
+						\xintifboolexpr{\pixpos>0}%
+							{%
+								\itemtomacro\LCNA[\pixpos]\pixchf%
+								\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\pixchf} ;%
+							}%
+							{}%
+						}%
+					}%
+				}%
+			}%
+			{%affichage du pixelart versions lettres ou chiffres simples (<=9) / display of letters/symbols PixelArt
+				\csvloop{file=#3,no head,command={%
+						\foreach \l [count=\n] in \csvline {%
+							\StrDel{\l}{ }[\l]
+							\IfSubStr{\PATlettres}{\l}%
+							{%
+								\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\l};%
+							}%
+							{}%
+						}%
+					}%
+				}%
+			}%
+		}%
+}%
+{%
+	\end{tikzpicture}%
+}%
+
+%----[en] commands
+\defKV[pixelarttkzen]{%
+	Codes=\def\PATlettres{#1},%
+	Colors=\def\PATcouleurs{#1},%
+	Symbols=\def\PATchiffres{#1},%
+	Style=\def\PATtaille{#1},%
+	Unit=\def\PATunit{#1}
+}
+
+\setKVdefault[pixelarttkzen]{%
+	Style=\scriptsize,%
+	Correction=false,%
+	Symb=false,%
+	Border=true,%
+	Unit=1
+}
+
+\NewDocumentCommand\PixlArtTikz{ s O{} D<>{} m }{%commande autonome
+	\useKVdefault[pixelarttkzen]%
+	\setKV[pixelarttkzen]{#2}%
+	%affichage du corrigé / display of correction
+	\IfBooleanTF{#1}{}{\begin{tikzpicture}[x=\PATunit cm,y=\PATunit cm,#3]}
+		\ifboolKV[pixelarttkzen]{Correction}%
+		{%
+			\csvloop{file=#4,no head,command={%
+					\foreach \l [count=\n] in \csvline {%
+						\StrDel{\l}{ }[\l]
+						\setsepchar{,}
+						\readlist*\LCPA\PATcouleurs
+						\StrPosition{\PATlettres}{\l}[\pixcnt]%
+						\xintifboolexpr{\pixcnt>0}%
+						{%
+							\itemtomacro\LCPA[\pixcnt]\pixcol%
+							\ifboolKV[pixelarttkzen]{Border}%
+							{\draw[fill=\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+							{\filldraw[\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+						}%
+						{}%
+					}%
+				}%
+			}%
+		}%
+		{%
+			\ifboolKV[pixelarttkzen]{Symb}{%affichage du pixelart versions chiffres si besoin
+				\csvloop{file=#4,no head,command={%
+						\foreach \l [count=\n] in \csvline {%
+							\StrDel{\l}{ }[\l]
+							\setsepchar{,}
+							\readlist*\LCNA\PATchiffres
+							\StrPosition{\PATlettres}{\l}[\pixpos]%
+							\xintifboolexpr{\pixpos>0}%
+							{%
+								\itemtomacro\LCNA[\pixpos]\pixchf%
+								\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\pixchf} ;%
+							}%
+							{}%
+						}%
+					}%
+				}%
+			}%
+			{%affichage du pixelart versions lettres ou chiffres simples (<=9) / display of letters/symbols PixelArt
+				\csvloop{file=#4,no head,command={%
+						\foreach \l [count=\n] in \csvline {%
+							\StrDel{\l}{ }[\l]
+							\IfSubStr{\PATlettres}{\l}%
+							{%
+								\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\l};%
+							}%
+							{}%
+						}%
+					}%
+				}%
+			}%
+		}%
+		\IfBooleanTF{#1}{}{\end{tikzpicture}}%
+}
+
+\NewDocumentEnvironment{EnvPixlArtTikz}{ O{} D<>{} m }%environnement
+{%
+	\useKVdefault[pixelarttkzen]%
+	\setKV[pixelarttkzen]{#1}%
+	%affichage du corrigé / display of correction
+	\begin{tikzpicture}[x=\PATunit cm,y=\PATunit cm,#2]
+		\ifboolKV[pixelarttkzen]{Correction}%
+		{%
+			\csvloop{file=#3,no head,command={%
+					\foreach \l [count=\n] in \csvline {%
+						\StrDel{\l}{ }[\l]
+						\setsepchar{,}
+						\readlist*\LCPA\PATcouleurs
+						\StrPosition{\PATlettres}{\l}[\pixcnt]%
+						\xintifboolexpr{\pixcnt>0}%
+						{%
+							\itemtomacro\LCPA[\pixcnt]\pixcol%
+							\ifboolKV[pixelarttkzen]{Border}%
+							{\draw[fill=\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+							{\filldraw[\pixcol] ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) ;}%
+						}%
+						{}%
+					}%
+				}%
+			}%
+		}%
+		{%
+			\ifboolKV[pixelarttkzen]{Symb}{%affichage du pixelart versions chiffres si besoin
+				\csvloop{file=#3,no head,command={%
+						\foreach \l [count=\n] in \csvline {%
+							\StrDel{\l}{ }[\l]
+							\setsepchar{,}
+							\readlist*\LCNA\PATchiffres
+							\StrPosition{\PATlettres}{\l}[\pixpos]%
+							\xintifboolexpr{\pixpos>0}%
+							{%
+								\itemtomacro\LCNA[\pixpos]\pixchf%
+								\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\pixchf} ;%
+							}%
+							{}%
+						}%
+					}%
+				}%
+			}%
+			{%affichage du pixelart versions lettres ou chiffres simples (<=9) / display of letters/symbols PixelArt
+				\csvloop{file=#3,no head,command={%
+						\foreach \l [count=\n] in \csvline {%
+							\StrDel{\l}{ }[\l]
+							\IfSubStr{\PATlettres}{\l}%
+							{%
+								\draw ({\n-0.5},{-\thecsvrow+0.5}) rectangle ({\n+0.5},{-\thecsvrow-0.5}) node[inner sep=0,midway,font=\PATtaille] {\l};%
+							}%
+							{}%
+						}%
+					}%
+				}%
+			}%
+		}%
+	}%
+	{%
+	\end{tikzpicture}%
+}%
+
+\endinput

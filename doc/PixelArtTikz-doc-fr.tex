@@ -1,0 +1,544 @@
+% !TeX TXS-program:compile = txs:///arara
+% arara: pdflatex: {shell: yes, synctex: no, interaction: batchmode}
+% arara: pdflatex: {shell: yes, synctex: no, interaction: batchmode} if found('log', '(undefined references|Please rerun|Rerun to get)')
+
+\documentclass{article}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[table,svgnames]{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{PixelArtTikz}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{tabularray}
+\usepackage{multicol}
+\usepackage{fancyvrb}
+\usepackage{fancyhdr}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\lfoot{\sffamily\small [PixelArtTikz]}
+\cfoot{\sffamily\small - \thepage{} -}
+\rfoot{\hyperlink{matoc}{\small\faArrowAltCircleUp[regular]}}
+
+%\usepackage{hvlogos}
+\usepackage{hologo}
+\providecommand\tikzlogo{Ti\textit{k}Z}
+\providecommand\TeXLive{\TeX{}Live\xspace}
+\providecommand\PSTricks{\textsf{PSTricks}\xspace}
+\let\pstricks\PSTricks
+\let\TikZ\tikzlogo
+\newcommand\TableauDocumentation{%
+	\begin{tblr}{width=\linewidth,colspec={X[c]X[c]X[c]X[c]X[c]X[c]},cells={font=\sffamily}}
+		{\huge \LaTeX} & & & & &\\
+		& {\huge \hologo{pdfLaTeX}} & & & & \\
+		& & {\huge \hologo{LuaLaTeX}} & & & \\
+		& & & {\huge \TikZ} & & \\
+		& & & & {\huge \TeXLive} & \\
+		& & & & & {\huge \hologo{MiKTeX}} \\
+	\end{tblr}
+}
+
+\usepackage{hyperref}
+\urlstyle{same}
+\hypersetup{pdfborder=0 0 0}
+\usepackage[margin=1.5cm]{geometry}
+\setlength{\parindent}{0pt}
+\definecolor{LightGray}{gray}{0.9}
+
+\def\TPversion{0.1.0}
+\def\TPdate{23 Janvier 2023}
+
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{minted}
+\NewTCBListing{PresentationCode}{ O{blue} m }{%
+	sharp corners=downhill,enhanced,arc=12pt,skin=bicolor,%
+	colback=#1!1!white,colframe=#1!75!black,colbacklower=white,%
+	attach boxed title to top right={yshift=-\tcboxedtitleheight},title=Code \LaTeX,%
+	boxed title style={%
+		colframe=#1!75!black,colback=#1!15!white,%
+		,sharp corners=downhill,arc=12pt,%
+	},%
+	fonttitle=\color{#1!90!black}\itshape\ttfamily\footnotesize,%
+	listing engine=minted,minted style=colorful,
+	minted language=tex,minted options={tabsize=4,fontsize=\footnotesize,autogobble},
+	#2
+}
+
+\newcommand\Cle[1]{{\bfseries\sffamily\textlangle #1\textrangle}}
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\thispagestyle{empty}
+
+\vspace{2cm}
+
+\begin{center}
+	\begin{minipage}{0.75\linewidth}
+	\begin{tcolorbox}[colframe=yellow,colback=yellow!15]
+		\begin{center}
+			\begin{tabular}{c}
+				{\Huge \texttt{PixelArtTikz [fr]}}\\
+				\\
+				{\LARGE Des PixelArts, en Ti\textit{k}Z}, \\
+				\\
+				{\LARGE avec solution et couleurs.} \\
+			\end{tabular}
+			
+			\medskip
+			
+			{\small \texttt{Version \TPversion{} -- \TPdate}}
+		\end{center}
+	\end{tcolorbox}
+\end{minipage}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{center}
+	\begin{tabular}{c}
+	\texttt{Cédric Pierquet}\\
+	{\ttfamily c pierquet -- at -- outlook . fr}\\
+	\texttt{\url{https://github.com/cpierquet/PixelArtTikz}}
+\end{tabular}
+\end{center}
+
+\vspace{0.25cm}
+
+{$\blacktriangleright$~~Des commandes pour afficher des PixelArts.}
+
+\smallskip
+
+{$\blacktriangleright$~~Environnement pour compléter éventuellement le PixelArt.}
+
+\smallskip
+
+\vspace{1cm}
+
+\begin{center}
+\begin{filecontents*}[overwrite]{perroquet.csv}
+-,-,-,-,-,-,4,4,4,4,-,-,-,-,-,-
+-,-,-,-,4,4,1,1,1,1,4,4,-,-,-,-
+-,-,-,4,1,1,1,1,1,1,1,1,4,-,-,-
+-,-,4,1,1,1,1,1,1,1,1,1,1,4,-,-
+-,-,4,1,1,1,1,1,1,1,1,1,1,4,-,-
+-,4,1,9,9,1,1,1,1,1,1,9,9,1,4,-
+-,4,9,9,9,9,4,4,4,4,9,9,9,9,4,-
+-,4,9,4,9,9,4,4,4,4,9,4,9,9,4,-
+-,4,1,9,9,9,4,4,4,4,9,9,9,1,4,-
+-,-,4,1,1,9,4,4,4,4,9,1,1,4,-,-
+-,-,4,1,1,1,4,4,4,4,1,1,1,4,-,-
+-,-,-,4,1,1,1,4,4,1,1,1,4,-,-,-
+-,-,4,3,1,1,1,1,1,1,1,1,3,4,-,-
+-,4,6,3,1,1,1,1,1,1,1,1,3,6,4,-
+-,4,6,6,1,1,1,1,1,1,1,1,6,6,4,-
+-,4,6,6,1,1,1,1,1,1,1,1,6,6,4,-
+-,4,6,4,1,1,1,4,4,1,1,1,4,6,4,-
+2,2,4,2,4,4,4,2,2,4,4,4,2,4,2,2
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+-,-,-,-,-,4,1,1,1,1,4,-,-,-,-,-
+-,-,-,-,-,-,4,1,1,4,-,-,-,-,-,-
+-,-,-,-,-,-,-,4,4,-,-,-,-,-,-,-
+\end{filecontents*}
+
+\PixelArtTikz[Codes=123469,Style=\ttfamily,Unite=0.35]{perroquet.csv}
+~~
+\PixelArtTikz[Codes=123469,Symboles={A,B,C,D,E,F},Symb,Style=\ttfamily,Unite=0.35]{perroquet.csv}
+~~
+\PixelArtTikz[Codes=123469,Couleurs={Red,Brown,Yellow,Black,Blue,White},Correction,Unite=0.35]{perroquet.csv}
+\end{center}
+
+\vspace{0.5cm}
+
+%\hfill{}\textit{Merci aux membres du groupe \faFacebook{} du \og Coin \LaTeX{} \fg{} pour leur aide et leurs idées !}
+
+%\hfill{}\textit{Merci à Denis Bitouzé et à Patrick Bideault pour leurs retours et idées !}
+
+\vfill
+
+\hrule
+
+\medskip
+
+\TableauDocumentation
+
+\medskip
+
+\hrule
+
+\medskip
+
+\newpage
+
+\phantomsection
+\hypertarget{matoc}{}
+
+\tableofcontents
+
+\newpage
+
+\part{Introduction}
+
+\section{Le package PixelArtTikz}
+
+\subsection{Introduction}
+
+L'idée est de \textit{proposer}, dans un environnement Ti\textit{k}Z, une commande permettant de générer des grilles PixelArt.
+
+Les données sont \textit{lues} à partir d'un fichier \textsf{csv}, externe au fichier \textsf{tex} ou déclaré en interne grâce à l'environnement \texttt{filecontents}.
+
+\medskip
+
+Avant toute chose, quelques petites infos sur les données au format \textsf{csv}, surtout dans l'optique de sa lecture et de son traitement par les commandes :
+
+\begin{itemize}
+	\item le fichier de données \textsf{csv} doit être formaté avec le séparateur décimal \og , \fg ;
+	\item des cases vides seront codées par \og \texttt{-} \fg.
+\end{itemize}
+
+Le fichier \textsf{csv} peut être déclaré directement dans le fichier \textsf{tex}, grâce à l'environnement \textsf{filecontents} (intégré en natif sur les dernières versions de \LaTeX) :
+
+\begin{PresentationCode}{listing only}
+	\begin{filecontents*}{nomfichier.csv}
+		A,B,C,D
+		A,B,D,C
+		B,A,C,D
+		B,A,D,C
+	\end{filecontents*}
+\end{PresentationCode}
+
+À la compilation, le fichier \textsf{nomfichier.csv} sera créé automatiquement, et l'option \Cle{[overwrite]} permet (logiquement) de propager les modifications au fichier \textsf{csv}.
+
+\subsection{Chargement du package, et option}
+
+Le package \textit{central} est ici \textsf{csvsimple}, qui permet de lire et traiter le fichier \textsf{csv}.
+
+Il est \og disponible \fg{} en version \hologo{LaTeX2e} ou en version \hologo{LaTeX3}. Par défaut, \textsf{PixelArtTikz} le charge en version \hologo{LaTeX3}, mais une \textsf{option} est disponible pour une \textit{rétro-compatibilité} avec la version \hologo{LaTeX2e}.
+
+\smallskip
+
+L'option \Cle{[csvii]} permet de passer l'appel au package en version \hologo{LaTeX2e}.
+
+\begin{PresentationCode}{listing only}
+\usepackage{PixelArtTikz}                     %chargement du package version 3
+%qui charge :
+%\RequirePackage{expl3}
+%\RequirePackage[l3]{csvsimple}
+
+\usepackage[csvii]{PixelArtTikz}              %chargement du package version 2
+%qui charge :
+%\RequirePackage[legacy]{csvsimple}
+\end{PresentationCode}
+
+\subsection{Packages utilisés}
+
+Le package est compatible avec les compilations usuelles en \textsf{latex}, \textsf{pdflatex}, \textsf{lualatex} ou \textsf{xelatex}.
+
+\medskip
+
+Il charge les packages et librairies suivantes :
+
+\begin{itemize}
+	\item \texttt{tikz}, \texttt{xintexpr} et \texttt{xinttools};
+	\item \texttt{xstring}, \texttt{xparse}, \texttt{simplekv} et \texttt{listofitems}.
+\end{itemize}
+
+\pagebreak
+
+\subsection{Commandes et environnement}
+
+Il existe deux manières de représenter un PixelArt :
+
+\begin{itemize}
+	\item soit par une commande autonome et indépendante ;
+	\item soit par un environnement Ti\textit{k}Z dans lequel du code pourra être \textit{rajouté}.
+\end{itemize}
+
+\begin{PresentationCode}{listing only}
+%Commande autonome
+\PixelArtTikz[clés]<options tikz>{fichier.csv}
+
+%Commande semi-autonome, à intégrer dans un environnement tikz
+\PixelArtTikz*[clés]{fichier.csv}
+
+%environnement
+\begin{EnvPixelArtTikz}[clés]<options tikz>{fichier.csv}
+	%code tikz
+\end{EnvPixelArtTikz}
+\end{PresentationCode}
+
+Concernant les couleurs, l'utilisateur utilisera celles disponibles avec les packages chargés.
+
+\smallskip
+
+La présente documentation a été compilée avec le package \textsf{xcolor}, chargé avec les options \Cle{[table,svgnames]}.
+
+\section{Petit aparté sur les fichiers csv}
+
+\textsf{CSV} désigne un format de fichiers dont le rôle est de présenter des données séparées par des virgules. Il s'agit d'une manière simplifiée d'afficher des données afin de les rendre transmissibles d'un programme à un autre.
+
+\smallskip
+
+Dans notre cas, le fichier \textsf{csv} contiendra les \textit{codes} qui seront analysés un par un et ligne par ligne pour avoir le rendu par \textit{code}, \textit{symbole} ou \textit{couleur}.
+
+\medskip
+
+Il \underline{doit} être préparé avec des caractères (codes) \textit{simples} pour que le code de \textsf{PixelArtTikz} puisse fonctionner.
+
+\pagebreak
+
+\part{Commandes et environnement}
+
+\section{La commande principale}
+
+\subsection{Exemple introductif}
+
+La commande \texttt{\textbackslash PixelArtTikz} nécessite de connaître :
+
+\begin{itemize}
+	\item le fichier \textsf{csv} à traiter ;
+	\item la liste (en fait sous forme de chaîne) des codes utilisés dans le fichier \textsf{csv} (comme \texttt{234679} ou \texttt{ABCDJK}\ldots);
+	\item la liste des symboles (éventuellement !) à afficher dans les cases s'il y a ambiguïté, comme \texttt{25,44,12} ou \texttt{AA,AB,AC};
+	\item la liste des couleurs (si la correction est demandée), dans le même ordre que la liste des caractères.
+\end{itemize}
+
+On peut donc commencer par créer le fichier \textsf{csv} qui sera lu et interprété par les commandes du package. Le fichier peut-être créé directement dans la code du fichier \textsf{tex}.
+
+\begin{PresentationCode}{}
+%déclaration du fichier csv
+\begin{filecontents*}[overwrite]{basique.csv}
+	A,B,C,D
+	A,B,D,C
+	B,A,D,C
+	C,A,B,D
+\end{filecontents*}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%notice et PixelArt
+\begin{center}
+	\begin{tblr}{colspec={*{4}{Q[1.25cm,c,m]}},hlines,vlines,rows={1.15em}}
+		\SetCell[c=4]{c} Notice & & & \\
+		A & B & C & D \\
+		45 & 22 & 1 & 7 \\
+		Noir & Vert & Jaune & Rouge \\
+	\end{tblr}
+\end{center}
+
+\PixelArtTikz[Codes=ABCD,Style=\large\sffamily,Unite=0.85]{basique.csv}
+~~
+\PixelArtTikz[Codes=ABCD,Symboles={45,22,1,7},Symb,Style=\large\sffamily,Unite=0.85]{basique.csv}
+~~
+\PixelArtTikz[Codes=ABCD,Couleurs={black,green,yellow,red},Correction,Unite=0.85]{basique.csv}
+~~
+\PixelArtTikz[Codes=ABCD,Couleurs={black,green,yellow,red},Correction,BordCases=false,Unite=0.85]{basique.csv}
+\end{PresentationCode}
+
+\pagebreak
+
+\subsection{Clés et options}
+
+\begin{PresentationCode}{listing only}
+\PixelArtTikz[clés]<options tikz>{fichier.csv}
+\end{PresentationCode}
+
+Le premier argument, \textit{optionnel} et entre \texttt{[...]} propose des \textsf{Clés} nécessaires au bon fonctionnement de la commande :
+
+\begin{itemize}
+	\item la clé \Cle{Codes} contient la \textit{chaîne} des codes \textit{simples} du  fichier \textsf{csv} ;
+	\item la clé \Cle{Couleurs} qui contient la \textit{liste} des couleurs associées ;
+	\item la clé \Cle{Symboles} qui contient la \textit{liste éventuelles} des caractères alternatifs à afficher dans les cases ;
+	\item la clé booléenne \Cle{Correction} qui permet de colorier le PixelArt ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{Symb} qui permet d'afficher les caractères \textit{alternatifs} ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{BordCases} qui permet d'afficher les bords des cases de la correction ;\hfill{}défaut \textsf{true}
+	\item la clé \Cle{Style} qui permet de spécifier le style des caractères. \hfill{}défaut \textsf{scriptsize}
+\end{itemize}
+
+Le second argument, \textit{optionnel} et entre \texttt{<...>} sont des options -- en langage Ti\textit{k}Z -- à passer à l'environnement qui sert de base au PixelArt.
+
+\medskip
+
+Le troisième argument, \textit{obligatoire}, est le nom du fichier \textsf{csv} à utiliser.
+
+\vspace{1cm}
+
+On rappelle que le fichier peut être créé au préalable, et placé dans le répertoire du fichier, ou bien il peut être créé \textit{en direct}, à l'aide du package \textsf{filecontents} (chargé par \LaTeX).
+
+\begin{PresentationCode}{}
+%création du fichier csv
+\begin{filecontents*}[overwrite]{perroquet.csv}
+	-,-,-,-,-,-,4,4,4,4,-,-,-,-,-,-
+	-,-,-,-,4,4,1,1,1,1,4,4,-,-,-,-
+	-,-,-,4,1,1,1,1,1,1,1,1,4,-,-,-
+	-,-,4,1,1,1,1,1,1,1,1,1,1,4,-,-
+	-,-,4,1,1,1,1,1,1,1,1,1,1,4,-,-
+	-,4,1,9,9,1,1,1,1,1,1,9,9,1,4,-
+	-,4,9,9,9,9,4,4,4,4,9,9,9,9,4,-
+	-,4,9,4,9,9,4,4,4,4,9,4,9,9,4,-
+	-,4,1,9,9,9,4,4,4,4,9,9,9,1,4,-
+	-,-,4,1,1,9,4,4,4,4,9,1,1,4,-,-
+	-,-,4,1,1,1,4,4,4,4,1,1,1,4,-,-
+	-,-,-,4,1,1,1,4,4,1,1,1,4,-,-,-
+	-,-,4,3,1,1,1,1,1,1,1,1,3,4,-,-
+	-,4,6,3,1,1,1,1,1,1,1,1,3,6,4,-
+	-,4,6,6,1,1,1,1,1,1,1,1,6,6,4,-
+	-,4,6,6,1,1,1,1,1,1,1,1,6,6,4,-
+	-,4,6,4,1,1,1,4,4,1,1,1,4,6,4,-
+	2,2,4,2,4,4,4,2,2,4,4,4,2,4,2,2
+	2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+	2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+	-,-,-,-,-,4,1,1,1,1,4,-,-,-,-,-
+	-,-,-,-,-,-,4,1,1,4,-,-,-,-,-,-
+	-,-,-,-,-,-,-,4,4,-,-,-,-,-,-,-
+\end{filecontents*}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%codes simples et sans ambiguïté
+%une case vide sera codée par -
+\PixelArtTikz[Codes=123469,Style=\ttfamily,Unite=0.35]{perroquet.csv}
+~~
+\PixelArtTikz[Codes=123469,Couleurs={Red,Brown,Yellow,Black,Blue,White},Correction,Unite=0.35]{perroquet.csv}
+~~
+\PixelArtTikz[Codes=123469,Couleurs={Red,Brown,Yellow,Black,Blue,White},Correction,Unite=0.35,BordCases=false]%
+	{perroquet.csv}
+\end{PresentationCode}
+
+\pagebreak
+
+Dans l'exemple suivant, les \textit{symboles} à afficher ne peuvent pas servir de \textit{codes}, donc on utilise les options liées à \Cle{Symboles} pour s'affranchir de cette limitation.
+
+\begin{PresentationCode}{}
+%codes à afficher, avec utiliser des symboles
+
+\begin{filecontents*}[overwrite]{cap.csv}
+	-,-,-,-,-,-,-,-,D,-,D,-,D,-,-,-,-,-,-,-,-,-
+	-,D,D,-,-,-,-,D,D,D,D,D,D,-,-,D,D,D,D,-,-,-
+	D,-,-,D,-,D,D,F,F,F,F,F,F,D,D,-,-,-,-,D,-,-
+	-,D,-,-,D,F,F,F,-,-,F,F,F,F,F,D,-,D,D,-,-,-
+	-,-,D,D,F,F,F,-,F,F,-,F,F,F,F,F,D,D,-,-,-,-
+	-,-,-,D,F,F,F,F,F,F,F,F,F,F,F,F,D,-,-,-,-,-
+	-,-,-,D,F,J,J,J,J,J,J,J,F,F,F,F,D,-,-,-,-,-
+	-,-,-,D,J,-,-,-,J,-,-,-,J,J,F,F,D,-,-,-,-,-
+	-,-,-,D,J,-,D,-,J,-,D,-,J,J,B,B,D,-,-,-,-,-
+	-,-,-,D,J,-,-,-,J,-,-,-,J,J,B,B,D,-,-,-,-,-
+	-,-,-,D,C,J,J,J,J,J,J,J,J,C,C,C,D,-,-,-,-,-
+	-,-,-,D,C,C,C,C,C,C,C,C,C,C,C,D,D,D,-,-,-,-
+	-,-,-,D,C,C,C,D,D,D,D,D,D,C,D,A,A,A,D,-,-,-
+	-,-,-,D,F,C,C,C,C,C,C,C,C,D,A,-,-,-,A,D,-,-
+	-,-,-,D,F,C,F,C,C,C,C,F,D,A,-,A,A,A,-,A,D,-
+	-,-,D,C,F,F,F,F,C,C,F,D,A,-,A,F,F,F,A,-,A,D
+	-,-,D,C,F,F,F,F,F,F,F,D,A,-,A,F,-,F,A,-,A,D
+	-,-,D,A,D,-,A,-,A,-,A,D,A,-,A,F,F,F,A,-,A,D
+	-,-,-,D,D,-,A,-,A,-,A,-,D,A,-,A,A,A,-,A,D,-
+	-,-,-,-,-,D,D,F,D,D,D,D,F,D,A,-,-,-,A,D,-,-
+	-,-,-,-,-,-,D,A,D,-,-,D,-,-,D,A,A,A,D,-,-,-
+	-,-,-,-,-,-,D,D,D,-,-,D,D,D,D,D,D,D,-,-,-,-
+\end{filecontents*}
+
+\PixelArtTikz[Codes=ABCDFJ,Symboles={1,2,3,4,6,10},Symb,Style=\tiny\sffamily,Unite=0.35]{cap.csv}
+~~
+\PixelArtTikz[Codes=ABCDFJ,Couleurs={Red,Brown,Yellow,Black,Blue,Gray},Correction,Unite=0.35]{cap.csv}
+\end{PresentationCode}
+
+\pagebreak
+
+\subsection{Commande étoilée}
+
+La commande \textit{étoilée} \texttt{\textbackslash PixelArtTikz*} permet d'intégrer le PixelArt dans un environnement créé par l'utilisateur. Cela permet par exemple de pouvoir rajouter du code en parallèle du PixelArt.
+
+\smallskip
+
+Il est à noter que, dans ce cas :
+
+\begin{itemize}
+	\item l'argument \textit{optionnel} entre \texttt{<...>} est inutile ;
+	\item la clé \Cle{Unite} n'intervient plus dans le tracé (elle peut être passée directement dans l'environnement !)
+\end{itemize}
+
+\begin{PresentationCode}{}
+\begin{center}
+	\begin{tikzpicture}[scale=0.5]
+		%grille pour visualiser le positionnement
+		\draw[very thin,gray,xstep=1,ystep=1] (0,0) grid (17,-24) ;
+		\foreach \x in {0,1,...,17} \draw[very thin,gray] (\x,-3pt)--(\x,3pt)%
+		node[above,font=\scriptsize\sffamily] {\x} ;
+		\foreach \y in {0,-1,...,-24} \draw[very thin,gray] (3pt,\y)--(-3pt,\y)%
+		node[left,font=\scriptsize\sffamily] {\y} ;
+		%le PixelArt
+		\PixelArtTikz*[Codes=123469,Couleurs={Red,Brown,Yellow,Black,Blue,White},Correction]{perroquet.csv}
+		%du code rajouté
+		\filldraw[Blue] (14,-1) circle[radius=1] ;
+		\filldraw[Yellow] (14,-1) circle[radius=0.8] ;
+		\draw[ForestGreen,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
+		node[right,font=\scriptsize\sffamily] {rajouté en Ti\textit{k}Z} ;
+	\end{tikzpicture}
+\end{center}
+\end{PresentationCode}
+
+\pagebreak
+
+\section{Environnement PixelArt}
+
+\subsection{Commande et options}
+
+Le package \textsf{PixelArtTikz} propose également un environnement pour créer un PixelArt, et pouvoir rajouter des éléments en marge du PixelArt.
+
+\begin{itemize}
+	\item L'environnement est créé autour de Ti\textit{k}Z et le code rajouté le sera dans un langage Ti\textit{k}Z !
+	\item Le code rajouté le sera, dans ce cas, \textit{au-dessus} du PixelArt !
+\end{itemize}
+
+Le fonctionnement global est le même que pour la commande autonome.
+
+\begin{PresentationCode}{listing only}
+	\begin{EnvPixelArtTikz}[clés]<options tikz>{fichier.csv}
+		%code(s) tikz qui seront au-dessus du PixelArt
+	\end{EnvPixelArtTikz}
+\end{PresentationCode}
+
+Le premier argument, \textit{optionnel} et entre \texttt{[...]} propose des \textsf{Clés} nécessaires au bon fonctionnement de la commande :
+
+\begin{itemize}
+	\item la clé \Cle{Codes} contient la \textit{chaîne} des codes \textit{simples} du  fichier \textsf{csv} ;
+	\item la clé \Cle{Couleurs} qui contient la \textit{liste} des couleurs associées ;
+	\item la clé \Cle{Symboles} qui contient la \textit{liste éventuelles} des caractères alternatifs à afficher dans les cases ;
+	\item la clé booléenne \Cle{Correction} qui permet de colorier le PixelArt ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{Symb} qui permet d'afficher les caractères \textit{alternatifs} ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{BordCases} qui permet d'afficher les bords des cases de la correction ;\hfill{}défaut \textsf{true}
+	\item la clé \Cle{Style} qui permet de spécifier le style des caractères. \hfill{}défaut \textsf{scriptsize}
+\end{itemize}
+
+Le second argument, \textit{optionnel} et entre \texttt{<...>} sont des options -- en langage Ti\textit{k}Z -- à passer à l'environnement qui sert de base au PixelArt.
+
+\medskip
+
+Le troisième argument, \textit{obligatoire}, est le nom du fichier \textsf{csv} à utiliser.
+
+\subsection{Exemple}
+
+Les symboles affichés dans les cases sont situés aux nœuds de coordonnées $(c\,;\,-l)$ où $l$ et $c$ sont les numéros de ligne et de colonne correspondants à la position de la donnée dans le fichier \textsf{csv}.
+
+\begin{PresentationCode}{}
+\begin{center}
+	\begin{EnvPixelArtTikz}%
+		[Codes=123469,Couleurs={Red,Brown,Yellow,Black,Blue,White},Correction,Unite=0.25]
+		{perroquet.csv}
+		\filldraw[Blue] (14,-1) circle[radius=1] ;
+		\filldraw[Yellow] (14,-1) circle[radius=0.8] ;
+		\draw[ForestGreen,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
+		node[right,font=\scriptsize\sffamily] {rajouté en Ti\textit{k}Z} ;
+	\end{EnvPixelArtTikz}
+\end{center}
+\end{PresentationCode}
+
+\newpage
+
+\part{Historique}
+
+\verb|v0.1.0|~:~~~~Version initiale
+
+\end{document}
