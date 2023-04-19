@@ -3,10 +3,8 @@
 % arara: pdflatex: {shell: yes, synctex: no, interaction: batchmode} if found('log', '(undefined references|Please rerun|Rerun to get)')
 
 \documentclass{article}
-\usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[table,svgnames]{xcolor}
 \usepackage{amsmath,amssymb}
 \usepackage{PixelArtTikz}
 \usepackage{fontawesome5}
@@ -45,10 +43,9 @@
 \hypersetup{pdfborder=0 0 0}
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
-\definecolor{LightGray}{gray}{0.9}
 
-\def\TPversion{0.1.0}
-\def\TPdate{23/01/2023}
+\def\TPversion{0.1.1}
+\def\TPdate{19/04/2023}
 
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
@@ -65,7 +62,7 @@
 	minted language=tex,minted options={tabsize=4,fontsize=\footnotesize,autogobble},
 	#2
 }
-
+\usepackage[english]{babel}
 \newcommand\Cle[1]{{\bfseries\sffamily\textlangle #1\textrangle}}
 
 \begin{document}
@@ -149,7 +146,7 @@
 ~~
 \PixlArtTikz[Codes=123469,Symbols={A,B,C,D,E,F},Symb,Style=\ttfamily,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35]{test1.csv}
+\PixlArtTikz[Codes=123469,Colors={red,brown,yellow,black,blue,white},Correction,Unit=0.35]{test1.csv}
 \end{center}
 
 \vspace{0.5cm}
@@ -269,24 +266,38 @@ There's two ways to create PixelArt :
 \end{EnvPixlArtTikz}
 \end{PresentationCode}
 
-For the colors, its depending from the loaded packages.
+\section{Colors}
+
+Concerning colors, the user can use the colors loaded by the loaded packages !
 
 \smallskip
 
-This documentation was compiled with \textsf{xcolor}, with \Cle{[table,svgnames]} options.
+Without extra package, avalaibles colors are :
 
-%%\section{Petit aparté sur les fichiers csv}
-%%
-%%\textsf{CSV} désigne un format de fichiers dont le rôle est de présenter des données séparées par des virgules. Il s'agit d'une manière simplifiée d'afficher des données afin de les rendre transmissibles d'un programme à un autre.
-%%
-%%\smallskip
-%%
-%%Dans notre cas, le fichier \textsf{csv} contiendra les \textit{codes} qui seront analysés un par un et ligne par ligne pour avoir le rendu par \textit{code}, \textit{symbole} ou \textit{couleur}.
-%%
-%%\medskip
-%%
-%%Il \underline{doit} être préparé avec des caractères (codes) \textit{simples} pour que le code de \textsf{PixelArtTikz} puisse fonctionner.
-%
+\smallskip
+
+\begin{tblr}{width=\linewidth,colspec={*{10}{X[m,c]}},cells={font=\small\ttfamily}}
+	\SetCell{bg=magenta} magenta &
+	\SetCell{bg=cyan} cyan &
+	\SetCell{bg=blue,fg=white} blue &
+	\SetCell{bg=green} green &
+	\SetCell{bg=red} red &
+	\SetCell{bg=darkgray,fg=white} darkgray &
+	\SetCell{bg=olive,fg=white} olive &
+	\SetCell{bg=lime} lime &
+	\SetCell{bg=brown} brown &
+	\SetCell{bg=lightgray} lightgray \\
+	\SetCell{bg=white} white &
+	\SetCell{bg=gray,fg=white} gray &
+	\SetCell{bg=black,fg=white} black &
+	\SetCell{bg=yellow} yellow &
+	\SetCell{bg=violet,fg=white} violet &
+	\SetCell{bg=teal,fg=white} teal &
+	\SetCell{bg=purple,fg=white} purple &
+	\SetCell{bg=pink} pink &
+	\SetCell{bg=orange} orange & \\
+\end{tblr}
+
 \pagebreak
 
 \part{Macros and environment}
@@ -397,9 +408,9 @@ The third argument, \textit{mandatory}, is the filename of the \textsf{csv}.
 %empty case with -
 \PixlArtTikz[Codes=123469,Style=\ttfamily,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35]{test1.csv}
+\PixlArtTikz[Codes=123469,Colors={red,brown,yellow,black,blue,white},Correction,Unit=0.35]{test1.csv}
 ~~
-\PixlArtTikz[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.35,Border=false]{test1.csv}
+\PixlArtTikz[Codes=123469,Colors={red,brown,yellow,black,blue,white},Correction,Unit=0.35,Border=false]{test1.csv}
 \end{PresentationCode}
 
 \pagebreak
@@ -436,7 +447,7 @@ In the following example, les \textit{symbols} to print can't be used for the \t
 
 \PixlArtTikz[Codes=ABCDFJ,Symbols={1,2,3,4,6,10},Symb,Style=\tiny\sffamily,Unit=0.35]{cap.csv}
 ~~
-\PixlArtTikz[Codes=ABCDFJ,Colors={Red,Brown,Yellow,Black,Blue,Gray},Correction,Unit=0.35]{cap.csv}
+\PixlArtTikz[Codes=ABCDFJ,Colors={red,brown,yellow,black,blue,gray},Correction,Unit=0.35]{cap.csv}
 \end{PresentationCode}
 
 \pagebreak
@@ -464,11 +475,11 @@ In this case :
 		\foreach \y in {0,-1,...,-24} \draw[very thin,gray] (3pt,\y)--(-3pt,\y)%
 		node[left,font=\scriptsize\sffamily] {\y} ;
 		%le PixelArt
-		\PixlArtTikz*[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction]{test1.csv}
+		\PixlArtTikz*[Codes=123469,Colors={red,brown,yellow,black,blue,white},Correction]{test1.csv}
 		%added code
-		\filldraw[Blue] (14,-1) circle[radius=1] ;
-		\filldraw[Yellow] (14,-1) circle[radius=0.8] ;
-		\draw[ForestGreen,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
+		\filldraw[blue] (14,-1) circle[radius=1] ;
+		\filldraw[yellow] (14,-1) circle[radius=0.8] ;
+		\draw[green,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
 		node[right,font=\scriptsize\sffamily] {Code Ti\textit{k}Z} ;
 	\end{tikzpicture}
 \end{center}
@@ -518,11 +529,11 @@ The symbols are at the nodes $(c\,;\,-l)$ where $l$ and $c$ are the row and colu
 \begin{PresentationCode}{}
 \begin{center}
 	\begin{EnvPixlArtTikz}%
-			[Codes=123469,Colors={Red,Brown,Yellow,Black,Blue,White},Correction,Unit=0.25]
+			[Codes=123469,Colors={red,brown,yellow,black,blue,white},Correction,Unit=0.25]
 			{test1.csv}
-		\filldraw[Blue] (14,-1) circle[radius=1] ;
-		\filldraw[Yellow] (14,-1) circle[radius=0.8] ;
-		\draw[ForestGreen,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
+		\filldraw[blue] (14,-1) circle[radius=1] ;
+		\filldraw[yellow] (14,-1) circle[radius=0.8] ;
+		\draw[green,very thick,<-,>=latex] (15,-1) to[bend left=30] (18,-2)%
 		node[right,font=\scriptsize\sffamily] {Ti\textit{k}Z code} ;
 	\end{EnvPixlArtTikz}
 \end{center}
@@ -531,6 +542,8 @@ The symbols are at the nodes $(c\,;\,-l)$ where $l$ and $c$ are the row and colu
 \newpage
 
 \part{Historique}
+
+\verb|v0.1.1|~:~~~~Bugfix with color
 
 \verb|v0.1.0|~:~~~~Initial version
 
