@@ -186,15 +186,15 @@
 
 The idea is to \textit{propose}, within a Ti\textit{k}Z environment, a macro to generate PixelArt.
 
-Datas are \textit{red} by a \textsf{csv} file, already created and placed into the folder of the \textsf{tex} file, or directly created by \textsf{filecontents}.
+The data is \textit{read} from a \textsf{csv} file, already existing in the folder of the \textsf{tex} file, or created on-the-fly by \textsf{filecontents}.
 
 \medskip
 
 Some advices about the \textsf{cvs} file :
 
 \begin{itemize}
-	\item the \textsf{csv} file must use "," as separator ;
-	\item empty cases are coded by "\texttt{-}".
+	\item the \textsf{csv} file must use "," as separator;
+	\item empty cells are coded by "\texttt{-}".
 \end{itemize}
 
 \begin{PresentationCode}{listing only}
@@ -206,17 +206,17 @@ Some advices about the \textsf{cvs} file :
 \end{filecontents*}
 \end{PresentationCode}
 
-While compiling, the file \textsf{filename.csv} will be created, and the option \Cle{[overwrite]} will propagate the modifications !
+While compiling, the file \textsf{filename.csv} will be created, and the option \Cle{[overwrite]} will propagate the modifications!
 
 \subsection{Loading of the package, and option}
 
-The \textit{needed} package is here \textsf{csvsimple}, in order to read the \textsf{csv} file.
+The package \textsf{csvsimple} is necessary in order to read the \textsf{csv} file.
 
-It's available for \hologo{LaTeX2e} or for \hologo{LaTeX3}. By default, \textsf{PixelArtTikz} loads it for \hologo{LaTeX3}, but an \textit{option} is available to work with \hologo{LaTeX2e}.
+The package is available in two versions, one written in \hologo{LaTeX2e} and the other in \hologo{LaTeX3}. By default, \textsf{PixelArtTikz} loads the \hologo{LaTeX3} version, but an \textit{option} is available to work with the \hologo{LaTeX2e} version.
 
 \smallskip
 
-The option \Cle{[csvii]} forces the usage of \hologo{LaTeX2e}.
+The option \Cle{[csvii]} forces the usage of the \hologo{LaTeX2e} version.
 
 \begin{PresentationCode}{listing only}
 \usepackage{PixelArtTikz}                     %package latex3
@@ -231,11 +231,11 @@ The option \Cle{[csvii]} forces the usage of \hologo{LaTeX2e}.
 
 \subsection{Used packages}
 
-It's fully copatible with usuals compilations, such as \textsf{latex}, \textsf{pdflatex}, \textsf{lualatex} or \textsf{xelatex}.
+It's fully compatible with usual \hologo{LaTeX} engines, such as \textsf{latex}, \textsf{pdflatex}, \textsf{lualatex} or \textsf{xelatex}.
 
 \medskip
 
-It loads the packages and libraries :
+It loads the following packages and libraries:
 
 \begin{itemize}
 	\item \texttt{tikz}, \texttt{xintexpr} et \texttt{xinttools};
@@ -246,11 +246,11 @@ It loads the packages and libraries :
 
 \subsection{Macros and environment}
 
-There's two ways to create PixelArt :
+There are two ways to create PixelArt:
 
 \begin{itemize}
-	\item by an independent macro ;
-	\item by a Ti\textit{k}Z environment in order to put code after.
+	\item with an independent macro;
+	\item with a Ti\textit{k}Z environment in order to add code afterwards.
 \end{itemize}
 
 \begin{PresentationCode}{listing only}
@@ -268,11 +268,11 @@ There's two ways to create PixelArt :
 
 \section{Colors}
 
-Concerning colors, the user can use the colors loaded by the loaded packages !
+Concerning colors: the user can use all colors provided by loaded packages!
 
 \smallskip
 
-Without extra package, avalaibles colors are :
+Without extra packages, the available colors are:
 
 \smallskip
 
@@ -309,9 +309,9 @@ Without extra package, avalaibles colors are :
 The macro \texttt{\textbackslash PixlArtTikz} needs :
 
 \begin{itemize}
-	\item the file \textsf{csv} ;
-	\item the list (by a string) of codes used in the file \textsf{csv} (eg \texttt{234679} or \texttt{ABCDJK}\ldots);
-	\item the list of symbols (if needed) to print in the cases, eg \texttt{25,44,12} or \texttt{AA,AB,AC} ;
+	\item the file \textsf{csv};
+	\item the list (by a string) of codes used in the file \textsf{csv} (e.g.\ \texttt{234679} or \texttt{ABCDJK}\ldots);
+	\item the list of symbols (if needed) to print in the cells, e.g.\ \texttt{25,44,12} or \texttt{AA,AB,AC};
 	\item the list of colors (for the correction), same order as the codes.
 \end{itemize}
 
@@ -349,25 +349,25 @@ We can begin by creating the file \textsf{csv}, directly within the \textsf{tex}
 
 \pagebreak
 
-\subsection{Options an keys}
+\subsection{Options and keys}
 
 \begin{PresentationCode}{listing only}
 \PixlArtTikz[keys]<options tikz>{file.csv}
 \end{PresentationCode}
 
-The first argument, \textit{optional} and between \texttt{[...]} proposes the \textsf{keys} :
+The first argument, \textit{optional} and between \texttt{[...]} proposes the \textsf{keys}:
 
 \begin{itemize}
-	\item the key \Cle{Codes} with the \textit{string} of \textit{simple} codes of the \textsf{csv} file ;
-	\item the key \Cle{Colors} with the \textit{list} of colors ;
-	\item the key \Cle{Symbols} with the \textit{optional list} of alt. symbols for the cases ;
-	\item the boolean \Cle{Correction} to color the PixelArt ;\hfill{}default \textsf{false}
-	\item the boolean \Cle{Symb} to print the symbols ;\hfill{}default \textsf{false}
-	\item the boolean \Cle{Border} to print borders of the cases ;\hfill{}default \textsf{true}
+	\item the key \Cle{Codes} with the \textit{string} of \textit{simple} codes of the \textsf{csv} file;
+	\item the key \Cle{Colors} with the \textit{list} of colors;
+	\item the key \Cle{Symbols} with the \textit{optional list} of alt.\ symbols for the cells;
+	\item the boolean \Cle{Correction} to color the PixelArt;\hfill{}default \textsf{false}
+	\item the boolean \Cle{Symb} to print the symbols;\hfill{}default \textsf{false}
+	\item the boolean \Cle{Border} to print borders of the cells;\hfill{}default \textsf{true}
 	\item the key \Cle{Style} to specifythe style of the text. \hfill{}default \textsf{\textbackslash scriptsize}
 \end{itemize}
 
-The second argument, \textit{optional} and between \texttt{<...>} are options -- in  Ti\textit{k}Z -- to parse to the environment which create the PixelArt.
+The second argument, \textit{optional} and between \texttt{<...>}, are Ti\textit{k}Z options to pass on to the environment which creates the PixelArt.
 
 \medskip
 
@@ -415,7 +415,7 @@ The third argument, \textit{mandatory}, is the filename of the \textsf{csv}.
 
 \pagebreak
 
-In the following example, les \textit{symbols} to print can't be used for the \textit{codes}, so we can use the keys \Cle{Symbols} and \Cle{Symb} to bypass this limitation.
+In the following example, the \textit{symbols} to print can't be used for the \textit{codes}, so we can use the keys \Cle{Symbols} and \Cle{Symb} to bypass this limitation.
 
 \begin{PresentationCode}{}
 %symbols associated to codes
@@ -454,15 +454,15 @@ In the following example, les \textit{symbols} to print can't be used for the \t
 
 \subsection{Starred macro}
 
-The starred \textit{étoilée} macro \texttt{\textbackslash PixlArtTikz*} is to be integrated within an environment already created. It cas be usefull to add code after the PixelArt.
+The starred macro \texttt{\textbackslash PixlArtTikz*} is to be used within an already created environment. It can be useful for adding code after the PixelArt.
 
 \smallskip
 
-In this case :
+In this case:
 
 \begin{itemize}
-	\item the \textit{optional} between \texttt{<...>} is useless ;
-	\item the key \Cle{Unit} is useless too (uints can be configured in the environment !)
+	\item the \textit{optional} argument between \texttt{<...>} is discarded;
+	\item the key \Cle{Unit} is discarded too (units can be configured in the environment!)
 \end{itemize}
 
 \begin{PresentationCode}{}
@@ -491,11 +491,11 @@ In this case :
 
 \subsection{Usage}
 
-The package \textsf{PixelArtTikz} proposes an environment to create a PixelArt, and to add code after.
+The package \textsf{PixelArtTikz} provides an environment to create a PixelArt and add code afterwards.
 
 \begin{itemize}
-	\item The environment is created within Ti\textit{k}Z and added code is to give in Ti\textit{k}Z !
-	\item The added code will be print "above" the PixelArt !
+	\item The environment is created within Ti\textit{k}Z and additional code is passed on to the Ti\textit{k}Z environment!
+	\item The additional code will be printed on top of the PixelArt!
 \end{itemize}
 
 \begin{PresentationCode}{listing only}
@@ -504,25 +504,25 @@ The package \textsf{PixelArtTikz} proposes an environment to create a PixelArt, 
 \end{EnvPixlArtTikz}
 \end{PresentationCode}
 
-The first argument, \textit{optional} and between \texttt{[...]} proposes the \textsf{keys} :
+The first argument, \textit{optional} and between \texttt{[...]}, proposes the \textsf{keys}:
 
 \begin{itemize}
-	\item the key \Cle{Codes} with the \textit{string} of \textit{simple} codes of the \textsf{csv} file ;
-	\item the key \Cle{Colors} with the \textit{list} of colors ;
-	\item the key \Cle{Symbols} with the \textit{optional list} of alt. symbols for the cases ;
-	\item the boolean \Cle{Correction} to color the PixelArt ;\hfill{}default \textsf{false}
-	\item the boolean \Cle{Symb} to print the symbols ;\hfill{}default \textsf{false}
-	\item the boolean \Cle{Border} to print borders of the cases ;\hfill{}default \textsf{true}
+	\item the key \Cle{Codes} with the \textit{string} of \textit{simple} codes of the \textsf{csv} file;
+	\item the key \Cle{Colors} with the \textit{list} of colors;
+	\item the key \Cle{Symbols} with the \textit{optional list} of alt.\ symbols for the cells;
+	\item the boolean \Cle{Correction} to color the PixelArt;\hfill{}default \textsf{false}
+	\item the boolean \Cle{Symb} to print the symbols;\hfill{}default \textsf{false}
+	\item the boolean \Cle{Border} to print borders of the cells;\hfill{}default \textsf{true}
 	\item the key \Cle{Style} to specifythe style of the text. \hfill{}default \textsf{\textbackslash scriptsize}
 \end{itemize}
 
-The second argument, \textit{optional} and between \texttt{<...>} are options -- in  Ti\textit{k}Z -- to parse to the environment which create the PixelArt.
+The second argument, \textit{optional} and between \texttt{<...>}, is for Ti\textit{k}Z options to be passed on to the environment which creates the PixelArt.
 
 \medskip
 
 The third argument, \textit{mandatory}, is the filename of the \textsf{csv}.
 
-\subsection{Exemple}
+\subsection{Example}
 
 The symbols are at the nodes $(c\,;\,-l)$ where $l$ and $c$ are the row and column  of the data in the \textsf{csv} file.
 
