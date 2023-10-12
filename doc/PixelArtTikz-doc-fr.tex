@@ -43,8 +43,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.1}
-\def\TPdate{19 avril 2023}
+\def\TPversion{0.1.2}
+\def\TPdate{12 octobre 2023}
 
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
@@ -566,7 +566,72 @@ Les symboles affichés dans les cases sont situés aux nœuds de coordonnées $(
 
 \newpage
 
+\section{La commande pour un \textit{mini-}PixelArt}
+
+\subsection{Idée}
+
+L'idée est de proposer une commande pour insérer, sans passer par un fichier \textsf{csv}, un petit PixelArt avec une liste de couleurs réduite.
+
+\begin{PresentationCode}{listing only}
+\MiniPixelArt[clés]{liste des couleurs}
+\end{PresentationCode}
+
+Le premier argument, \textit{optionnel} et entre \texttt{[...]} propose des \textsf{Clés} nécessaires au bon fonctionnement de la commande :
+
+\begin{itemize}
+	\item la clé \Cle{Unite} pour spécifier l'unité des cases ;\hfill{}défaut \textsf{0.25em}
+	\item le booléen \Cle{Bord} pour afficher une bordure aux cases.\hfill{}défaut \textsf{false}
+\end{itemize}
+
+Le deuxième argument, obligatoire et entre \texttt{\{...\}} permet de donner les couleurs des cases :
+
+\begin{itemize}
+	\item chaque couleur est codée par une lettre :
+	\begin{multicols}{5}
+		\begin{itemize}
+			\item \texttt{R : \textcolor{red}{rouge}}
+			\item \texttt{V : \textcolor{green}{vert}}
+			\item \texttt{B : \textcolor{blue}{bleu}}
+			\item \texttt{J : \textcolor{yellow}{jaune}}
+			\item \texttt{N : \textcolor{black}{noir}}
+			\item \texttt{G : \textcolor{gray}{gris}}
+			\item \texttt{. : \colorbox{lightgray}{\textcolor{white}{blanc}}}
+			\item \texttt{M : \textcolor{brown}{marron}}
+			\item \texttt{O : \textcolor{orange}{orange}}
+			\item \texttt{P : \textcolor{violet}{violet}}
+		\end{itemize}
+	\end{multicols}
+	\item chaque \textit{passage à la ligne} est spécifié par \texttt{,} ;
+	\item les bords éventuels ont une épaisseur égale à 10\,\% de l'unité des carreaux.
+\end{itemize}
+
+Le dernier argument, optionnel et entre \texttt{<...>}, permet quant à lui de passer des options à l'environnement \textsf{tikz} créé.
+
+\subsection{Exemples}
+
+\begin{PresentationCode}{}
+\MiniPixelArt{%
+	..RR..RR..,
+	.RRRRRRRR.,
+	RRRRRRRRRR,
+	RRRRRRRRRR,
+	RRRRRRRRRR,
+	.RRRRRRRR.,
+	..RRRRRR..,
+	...RRRR...,
+	....RR....
+}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+En ligne, on a \MiniPixelArt[Unite=5mm,Bord]{NBVOJV,JGP.NR}<baseline=(current bounding box.center)> ce miniPA.
+\end{PresentationCode}
+
+\pagebreak
+
 \part{Historique}
+
+\verb|v0.1.2|~:~~~~Possibilité de créer des \textit{mini-}PixelArts
 
 \verb|v0.1.1|~:~~~~Correction d'un bug avec les couleurs
 

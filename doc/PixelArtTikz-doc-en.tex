@@ -44,8 +44,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.1}
-\def\TPdate{19/04/2023}
+\def\TPversion{0.1.2}
+\def\TPdate{12/10/2023}
 
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
@@ -541,7 +541,73 @@ The symbols are at the nodes $(c\,;\,-l)$ where $l$ and $c$ are the row and colu
 
 \newpage
 
-\part{Historique}
+\section{Macro for \textit{mini-}PixelArt}
+
+\subsection{Idea}
+
+The idea is tu propose a macro to insert, without \textsf{csv} file, a small PixelArt with small colors list.
+
+\begin{PresentationCode}{listing only}
+	\MiniPixlArt[keys]{list of colors}
+\end{PresentationCode}
+
+The first argument, \textit{optional} and between \texttt{[...]} proposes the \textsf{keys }:
+
+\begin{itemize}
+	\item the key \Cle{Unit} for dimension of the cells ;\hfill{}default \textsf{0.25em},
+	\item the boolean \Cle{Border} to print a small border for the cells.\hfill{}default \textsf{false}
+\end{itemize}
+
+The second argument, \textit{mandatory} and between \texttt{\{...\}}, is the colors of the cells :
+
+\begin{itemize}
+	\item each color is \textit{coded} by a letter :
+	\begin{multicols}{5}
+		\begin{itemize}
+			\item \texttt{R : \textcolor{red}{red}}
+			\item \texttt{G : \textcolor{green}{green}}
+			\item \texttt{C : \textcolor{cyan}{blue}}
+			\item \texttt{Y : \textcolor{yellow}{yellow}}
+			\item \texttt{B : \textcolor{black}{black}}
+			\item \texttt{L : \textcolor{lightgray}{gray}}
+			\item \texttt{. : \colorbox{lightgray}{\textcolor{white}{white}}}
+			\item \texttt{M : \textcolor{brown}{maroon}}
+			\item \texttt{O : \textcolor{orange}{orange}}
+			\item \texttt{P : \textcolor{violet}{purple}}
+		\end{itemize}
+	\end{multicols}
+	\item each linebreak is done by \texttt{,} ;
+	\item the thickness of the borders are 10\,\% of the unit.
+\end{itemize}
+
+The last argument, \textit{optional} and between \texttt{<...>}, proposes options for the \textsf{tikz} environment.
+
+\subsection{Examples}
+
+\begin{PresentationCode}{}
+\MiniPixlArt{%
+	..RR..RR..,
+	.RRRRRRRR.,
+	RRRRRRRRRR,
+	RRRRRRRRRR,
+	RRRRRRRRRR,
+	.RRRRRRRR.,
+	..RRRRRR..,
+	...RRRR...,
+	....RR....
+}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+Inline, we can give \MiniPixlArt[Unit=5mm,Border]{BCGOYG,YLP.BR}<baseline=(current bounding box.center)>
+this miniPA.
+\end{PresentationCode}
+
+\pagebreak
+
+\part{History}
+
+\verb|v0.1.2|~:~~~~\textit{mini-}PixelArts
 
 \verb|v0.1.1|~:~~~~Bugfix with color
 

@@ -2,7 +2,8 @@
 % licence........: Released under the LaTeX Project Public License v1.3c or later, see http://www.latex-project.org/lppl.txtf
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{PixelArtTikz}[2023/09/04 v0.1.1 PixelArts with csv and TikZ]
+\ProvidesPackage{PixelArtTikz}[2023/10/12 v0.1.2 PixelArts with csv and TikZ]
+% 0.1.2		Mini pixerlart
 % 0.1.1		Small bugfix with color
 % 0.1.0		Version initiale
 
@@ -310,5 +311,86 @@
 	{%
 	\end{tikzpicture}%
 }%
+
+%----mini pixelart
+\newlength{\minipaunit}
+\defKV[miniPA]{Unite=\setlength{\minipaunit}{#1}}
+\setKVdefault[miniPA]{Bord=false,Unite=0.25em}
+
+\NewDocumentCommand\DessineCarrePA{ m m m }{%1=nblig,%2=nbcol,%3=color
+	\xdef\tmpcol{teal}%
+	\IfStrEq{#3}{R}{\xdef\tmpcol{red}}{}%
+	\IfStrEq{#3}{V}{\xdef\tmpcol{green}}{}%
+	\IfStrEq{#3}{B}{\xdef\tmpcol{blue}}{}%
+	\IfStrEq{#3}{J}{\xdef\tmpcol{yellow}}{}%
+	\IfStrEq{#3}{N}{\xdef\tmpcol{black}}{}%
+	\IfStrEq{#3}{G}{\xdef\tmpcol{gray}}{}%
+	\IfStrEq{#3}{.}{\xdef\tmpcol{white}}{}%
+	\IfStrEq{#3}{M}{\xdef\tmpcol{brown}}{}%
+	\IfStrEq{#3}{O}{\xdef\tmpcol{orange}}{}%
+	\IfStrEq{#3}{P}{\xdef\tmpcol{violet}}{}%
+	\ifboolKV[miniPA]{Bord}%
+		{\draw[line width=0.075\minipaunit,draw=black,fill=\tmpcol] ({\j},{-\i}) rectangle++ (1,-1) ;}%
+		{\draw[line width=0.075\minipaunit,draw=\tmpcol,fill=\tmpcol] ({\j},{-\i}) rectangle++ (1,-1) ;}%
+}
+
+\NewDocumentCommand\MiniPixelArt{ O{} m D<>{} }{%
+	\restoreKV[miniPA]%
+	\setKV[miniPA]{#1}%
+	\setsepchar{,}%
+	\readlist*\tmpdata{#2}%
+	\xdef\tmpnblgn{\tmpdatalen}%
+	\itemtomacro\tmpdata[1]\tmpdatacola%
+	\StrLen{\tmpdatacola}[\tmpnbcol]%
+	\begin{tikzpicture}[x=\minipaunit,y=\minipaunit,#3]
+		\foreach \i in {1,...,\tmpnblgn}{%
+			\itemtomacro\tmpdata[\i]\tmplgn%
+			\foreach \j in {1,...,\tmpnbcol}{%
+				\StrChar{\tmplgn}{\j}[\tmpchar]%
+				\DessineCarrePA{\j}{\i}{\tmpchar}%
+			}%
+		}%
+	\end{tikzpicture}%
+}
+
+\defKV[miniPAen]{Unit=\setlength{\minipaunit}{#1}}
+\setKVdefault[miniPAen]{Border=false,Unit=0.25em}
+
+\NewDocumentCommand\DrawSquarePA{ m m m }{%1=nblig,%2=nbcol,%3=color
+	\xdef\tmpcol{teal}%
+	\IfStrEq{#3}{R}{\xdef\tmpcol{red}}{}%
+	\IfStrEq{#3}{G}{\xdef\tmpcol{green}}{}%
+	\IfStrEq{#3}{C}{\xdef\tmpcol{blue}}{}%
+	\IfStrEq{#3}{Y}{\xdef\tmpcol{yellow}}{}%
+	\IfStrEq{#3}{B}{\xdef\tmpcol{black}}{}%
+	\IfStrEq{#3}{L}{\xdef\tmpcol{gray}}{}%
+	\IfStrEq{#3}{.}{\xdef\tmpcol{white}}{}%
+	\IfStrEq{#3}{M}{\xdef\tmpcol{brown}}{}%
+	\IfStrEq{#3}{O}{\xdef\tmpcol{orange}}{}%
+	\IfStrEq{#3}{P}{\xdef\tmpcol{violet}}{}%
+	\ifboolKV[miniPAen]{Border}%
+	{\draw[line width=0.075\minipaunit,draw=black,fill=\tmpcol] ({\j},{-\i}) rectangle++ (1,-1) ;}%
+	{\draw[line width=0.075\minipaunit,draw=\tmpcol,fill=\tmpcol] ({\j},{-\i}) rectangle++ (1,-1) ;}%
+}
+
+\NewDocumentCommand\MiniPixlArt{ O{} m D<>{} }{%
+	\restoreKV[miniPAen]%
+	\setKV[miniPAen]{#1}%
+	\setsepchar{,}%
+	\readlist*\tmpdata{#2}%
+	\xdef\tmpnblgn{\tmpdatalen}%
+	\itemtomacro\tmpdata[1]\tmpdatacola%
+	\StrLen{\tmpdatacola}[\tmpnbcol]%
+	\begin{tikzpicture}[x=\minipaunit,y=\minipaunit,#3]
+		\foreach \i in {1,...,\tmpnblgn}{%
+			\itemtomacro\tmpdata[\i]\tmplgn%
+			\foreach \j in {1,...,\tmpnbcol}{%
+				\StrChar{\tmplgn}{\j}[\tmpchar]%
+				\DrawSquarePA{\j}{\i}{\tmpchar}%
+			}%
+		}%
+	\end{tikzpicture}%
+}
+
 
 \endinput
