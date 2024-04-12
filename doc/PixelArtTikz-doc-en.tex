@@ -7,6 +7,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{PixelArtTikz}
+\usepackage{couleurs-fr}
 \usepackage{fontawesome5}
 \usepackage{enumitem}
 \usepackage{tabularray}
@@ -44,8 +45,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.2}
-\def\TPdate{12/10/2023}
+\def\TPversion{0.1.3}
+\def\TPdate{11/04/2024}
 
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
@@ -603,9 +604,132 @@ Inline, we can give \MiniPixlArt[Unit=5mm,Border]{BCGOYG,YLP.BR}<baseline=(curre
 this miniPA.
 \end{PresentationCode}
 
+\newpage
+
+\section{Macro for cutting PixelArt}
+
+\subsection{Idea}
+
+The idea is to offer commands to create \textit{collaborative} PixelArts, to form a \textit{large} image from several small ones (of the same size).
+
+\smallskip
+
+{\footnotesize\faBomb} For practical reasons (related to the use of \texttt{filecontents}) the file \textsf{csv} must end with an empty line (it is created automatically via \texttt{filecontents}, and the code uses this specificity).
+
+\smallskip
+
+The available \Cle{keys} are exactly the same as those in classic displays.
+
+\subsection{Global usage}
+
+The argument \texttt{cutting} can be given in the form :
+%
+\begin{itemize}
+	\item \Cle{<number of block length>x<number of block col>} to specify the size of the blocks;
+	\item \Cle{<number of V blocks>+<number of H blocks>} to specify the number of blocks.
+\end{itemize}
+
+\begin{PresentationCode}{listing only}
+\CutPixlArtTikz(*)[keys]<tikz options>{file.csv}{cutting}
+%(*) := change layout formatting (A1 or 1.1)
+%1   := keys
+%2   := tikz options
+%3   := csv file
+%4   := block size (LxC) or block number (L+C)
+
+\HelpGridPixelArtTikz(*)[scale]{file.csv}{cutting}
+%(*) := change layout formatting (A1 or 1.1)
+%1   := scale of notice
+%2   := csv file
+%4   := block size (LxC) or block number (L+C)
+\end{PresentationCode}
+
+\begin{filecontents*}[overwrite]{PAkoala.csv}
+A,A,A,A,A,A,A,H,H,H,A,A,A,A,A,H,H,H,A,A,A,A,A,A,A,A,A,H,H,H,H,A,A,H,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,H,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,H,A,A,A,A,A,H,A,A,A,A,A,A
+A,A,A,H,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,H,H,H,A,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,B,E,E,E,E,A,A,A,A,A,A,A,A,A,A,A,H,H,H,A,B,B,E,E,E,E,B,A,A,A,A,A,H
+A,A,H,A,A,A,A,B,E,E,E,E,E,A,A,A,A,A,A,A,A,A,A,H,H,H,B,E,E,E,E,E,E,B,B,A,A,A,A,H
+A,A,H,A,A,B,B,E,C,C,C,C,C,E,B,B,B,E,E,E,E,E,E,B,B,B,E,C,C,C,C,C,C,E,B,B,H,H,A,A
+A,A,H,A,B,E,D,D,D,D,B,D,C,C,E,E,E,E,C,C,C,C,E,E,E,E,E,C,D,B,B,D,D,D,E,B,H,A,A,A
+A,A,A,A,B,E,D,D,F,F,D,B,D,C,C,E,C,C,C,C,C,C,C,C,E,C,C,D,B,D,D,F,F,D,E,B,A,A,A,H
+A,A,A,B,C,D,D,F,F,F,D,D,B,B,C,C,C,C,C,C,C,C,C,C,C,C,C,B,D,D,D,F,F,D,D,C,B,A,H,H
+A,A,A,B,C,D,F,F,F,F,F,D,D,D,C,C,C,C,C,C,C,C,C,C,C,C,C,D,D,F,F,F,F,F,D,C,B,A,H,H
+A,A,A,B,D,D,F,F,F,F,F,D,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,F,F,F,F,F,D,D,B,A,A,H
+A,A,A,B,D,D,G,F,F,F,F,D,C,C,B,B,B,C,C,B,B,C,C,B,B,B,C,C,D,F,F,F,F,G,D,D,B,A,A,A
+A,A,A,A,B,G,G,F,F,F,F,D,C,C,B,F,B,C,B,D,D,B,C,B,F,B,C,C,D,G,F,F,F,G,G,B,H,A,A,A
+A,A,A,A,A,B,G,G,G,F,G,D,C,C,C,B,B,C,B,D,D,B,C,B,B,C,C,C,D,G,G,F,G,G,B,H,H,H,A,A
+A,A,A,A,A,A,B,G,G,G,G,B,C,C,C,C,C,C,B,B,B,B,C,C,C,C,C,C,D,B,G,G,G,G,B,H,H,H,A,A
+A,A,A,A,A,A,A,B,B,B,B,B,C,C,C,C,C,C,B,B,B,B,C,C,C,C,C,C,D,B,B,B,B,B,A,A,H,H,A,A
+A,A,A,A,A,A,A,A,A,A,A,D,D,C,C,C,C,F,B,B,B,B,F,C,C,C,C,D,D,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,B,D,D,C,C,C,F,F,B,B,F,F,C,C,C,D,D,B,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,A,A,A,A,B,B,D,C,C,F,F,F,F,F,F,C,C,D,B,B,A,A,A,A,A,A,H,H,H,A,A,A
+A,A,A,A,H,H,H,H,A,A,A,A,B,B,D,D,D,G,G,G,G,G,G,D,D,D,D,B,A,A,A,A,A,A,A,H,H,H,A,A
+A,A,A,A,H,H,H,A,A,A,A,B,D,D,D,D,D,G,G,G,G,G,G,D,D,D,D,D,B,A,A,A,A,A,A,A,H,H,A,A
+A,A,A,H,A,A,A,A,A,A,B,C,D,D,D,G,G,G,D,D,D,D,G,G,G,D,D,D,C,B,A,H,H,A,A,A,A,H,A,A
+A,A,A,H,H,A,A,A,A,A,D,C,C,C,D,G,G,F,G,D,D,G,F,G,G,D,D,C,C,C,B,A,H,H,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,H,B,D,D,C,C,D,G,G,F,F,F,F,F,F,G,G,D,D,C,C,D,B,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,B,D,D,C,C,C,C,C,B,F,F,F,F,F,B,C,C,C,C,D,D,B,A,A,H,H,H,H,A,A,A
+A,A,A,H,H,A,A,A,A,B,D,D,C,C,C,C,C,C,B,F,F,F,B,C,C,C,C,C,D,D,B,A,A,A,A,H,H,A,A,A
+A,A,A,A,A,A,A,A,A,A,B,B,D,D,C,C,C,C,C,B,F,B,C,C,C,C,D,D,B,B,A,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,B,B,B,D,D,C,C,C,C,B,F,B,C,C,C,C,D,B,B,B,A,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,B,C,C,C,B,B,D,D,D,D,B,F,B,D,D,D,B,B,D,C,C,B,A,A,A,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,B,C,C,C,C,C,D,B,B,B,F,F,F,F,B,B,B,D,D,C,C,C,C,B,A,A,A,A,A,A,H,H
+A,A,A,A,A,A,A,A,B,C,C,C,C,C,D,D,D,G,G,F,F,G,G,D,D,D,D,C,C,C,C,B,A,A,A,A,A,A,H,H
+A,A,A,A,A,A,A,I,B,D,C,C,C,C,C,C,C,G,G,F,F,G,G,C,C,C,C,C,C,C,D,B,I,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,I,B,D,D,D,C,C,C,B,B,B,G,G,G,G,B,B,B,C,C,C,D,D,D,B,I,A,A,A,A,A,A,A
+A,A,A,A,A,H,A,I,I,B,D,D,D,D,D,C,C,C,B,D,D,B,C,C,C,C,D,D,D,B,B,I,I,A,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,I,B,B,D,D,D,D,D,C,C,B,D,D,B,C,C,C,D,D,D,D,B,I,I,A,A,A,A,A,A,A,A
+A,A,H,H,H,A,A,A,I,I,I,B,B,B,D,B,B,B,B,B,B,B,B,B,B,D,B,B,B,I,I,I,A,A,A,A,A,A,H,A
+A,A,H,H,H,A,A,A,A,I,I,I,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,I,I,I,A,A,A,A,A,A,A,H,A
+H,H,A,H,H,A,A,A,A,A,A,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,I,I,I,I,I,I,I,I,I,A,A,A,A,A,A,A,A,A,A,A,H,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A
+\end{filecontents*}
+
+\subsection{Example}
+
+\def\listcoulkoala%
+{VertForet,Noir,GrisClair,GrisFonce,Beige,Blanc,BleuClair,VertClair,Marron}
+
+\begin{PresentationCode}{listing only}
+\def\listcoulkoala%
+	{VertForet,Noir,GrisClair,GrisFonce,Beige,Blanc,BleuClair,VertClair,Marron}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%block with 8x8 size
+\HelpGridPixelArtTikz{PAkoala.csv}{8x8}
+~~
+\PixlArtTikz[Correction,Unit=0.125,Codes=ABCDEFGHI,Colors={\listcoulkoala},Grid=8x8]{PAkoala.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%16 blocks (4L 4C)
+\HelpGridPixelArtTikz*[2]{PAkoala.csv}{4+4}
+~~
+\PixlArtTikz[Correction,Unit=0.2,Codes=ABCDEFGHI,Colors={\listcoulkoala},Grid=4+4]{PAkoala.csv}
+\end{PresentationCode}
+
+\newpage
+
+\begin{PresentationCode}{}
+%block with 8x8 size
+\CutPixlArtTikz[Unit=0.3,Codes=ABCDEFGHI]{PAkoala.csv}{8x8}
+\end{PresentationCode}
+
+\pagebreak
+
+\begin{PresentationCode}{}
+%16 blocks (4L 4C)
+\CutPixlArtTikz*[Unit=0.3,Codes=ABCDEFGHI,Correction,Colors={\listcoulkoala}]{PAkoala.csv}{4+4}
+\end{PresentationCode}
+
 \pagebreak
 
 \part{History}
+
+\verb|v0.1.3|~:~~~~Cut PixelArts within several PixelArts
 
 \verb|v0.1.2|~:~~~~\textit{mini-}PixelArts
 

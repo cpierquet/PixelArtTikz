@@ -8,6 +8,7 @@
 %\usepackage[table,svgnames]{xcolor}
 \usepackage{amsmath,amssymb}
 \usepackage{PixelArtTikz}
+\usepackage{couleurs-fr}
 \usepackage{fontawesome5}
 \usepackage{enumitem}
 \usepackage{tabularray}
@@ -43,8 +44,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.2}
-\def\TPdate{12 octobre 2023}
+\def\TPversion{0.1.3}
+\def\TPdate{11 avril 2024}
 
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
@@ -107,6 +108,10 @@
 \vspace{0.25cm}
 
 {$\blacktriangleright$~~Des commandes pour afficher des PixelArts.}
+
+\smallskip
+
+{$\blacktriangleright$~~Des commandes pour découper des PixelArts en plusieurs parties.}
 
 \smallskip
 
@@ -242,18 +247,20 @@ Il charge les packages et librairies suivantes :
 
 \begin{itemize}
 	\item \texttt{tikz}, \texttt{xintexpr} et \texttt{xinttools};
-	\item \texttt{xstring}, \texttt{xparse}, \texttt{simplekv} et \texttt{listofitems}.
+	\item \texttt{xstring}, \texttt{xparse}, \texttt{simplekv} et \texttt{listofitems} ;
+	\item \texttt{multicol} (pour le \textit{découpage}).
 \end{itemize}
 
 \pagebreak
 
 \subsection{Commandes et environnement}
 
-Il existe deux manières de représenter un PixelArt :
+Il existe trois manières de représenter un PixelArt :
 
 \begin{itemize}
 	\item soit par une commande autonome et indépendante ;
-	\item soit par un environnement Ti\textit{k}Z dans lequel du code pourra être \textit{rajouté}.
+	\item soit par un environnement Ti\textit{k}Z dans lequel du code pourra être \textit{rajouté} ;
+	\item soit par \textit{découpage} de la grille en plusieurs (travail collaboratif).
 \end{itemize}
 
 \begin{PresentationCode}{listing only}
@@ -267,6 +274,17 @@ Il existe deux manières de représenter un PixelArt :
 \begin{EnvPixelArtTikz}[clés]<options tikz>{fichier.csv}
 	%code tikz
 \end{EnvPixelArtTikz}
+\end{PresentationCode}
+
+\begin{PresentationCode}{listing only}
+%Affichage d'un bloc précis (si découpage)
+\PixelArtTikzBloc[clés]<options tikz>{fichier.csv}{découpage}{num bloc}
+
+%Affichage des blocs (si découpage)
+\DecoupPixelArtTikz(*)[clés]<options tikz>{fichier.csv}{découpage}
+
+%Affichage d'une 'aide'
+\AideGrillePixelArtTikz(*)[Echelle]{fichier.csv}{découpage}
 \end{PresentationCode}
 
 \section{Les couleurs}
@@ -304,6 +322,10 @@ Les couleurs disponibles sans autre package sont donc :
 	\SetCell{bg=pink} pink &
 	\SetCell{bg=orange} orange & \\
 \end{tblr}
+
+\smallskip
+
+Pour des couleurs \textit{francisées}, le package \texttt{couleurs-fr} pourra être utile.
 
 \section{Petit aparté sur les fichiers csv}
 
@@ -383,6 +405,11 @@ Le premier argument, \textit{optionnel} et entre \texttt{[...]} propose des \tex
 	\item la clé booléenne \Cle{Correction} qui permet de colorier le PixelArt ;\hfill{}défaut \textsf{false}
 	\item la clé booléenne \Cle{Symb} qui permet d'afficher les caractères \textit{alternatifs} ;\hfill{}défaut \textsf{false}
 	\item la clé booléenne \Cle{BordCases} qui permet d'afficher les bords des cases de la correction ;\hfill{}défaut \textsf{true}
+	\item la clé \Cle{Decoupage} pour afficher des lignes de découpage éventuel :
+	\begin{itemize}
+		\item sous la forme \Cle{<nb lig bloc>x<nb col bloc>} pour spécifier la dimension des blocs ;
+		\item sous la forme \Cle{<nb blocs V>+<nb blocs H>} pour spécifier le nombre de blocs ;
+	\end{itemize}
 	\item la clé \Cle{Style} qui permet de spécifier le style des caractères. \hfill{}défaut \textsf{scriptsize}
 \end{itemize}
 
@@ -566,6 +593,197 @@ Les symboles affichés dans les cases sont situés aux nœuds de coordonnées $(
 
 \newpage
 
+\section{La commande pour découper}
+
+\subsection{Idée et fonctionnement global}
+
+L'idée est de proposer unes commandes pour créer des PixelArts \textit{collaboratifs}, pour former une \textit{grande} image à partir de plusieurs petites (de même taille).
+
+\smallskip
+
+{\footnotesize\faBomb} Pour des raisons pratiques (liées à l'utilisation de \texttt{filecontents}) le fichier \textsf{csv} doit finir par une ligne vide (elle est créée automatiquement via \texttt{filecontents}, et le code utilise cette spécificité).
+
+\smallskip
+
+Les \Cle{clés} disponibles sont exactement les mêmes que celles des affichages classiques.
+
+\smallskip
+
+L'exemple qui illustre cet aspect est issu d'un travail de Cyril IakoNelly, et représente un koala, dont le fichier \textsf{csv} a une taille 40×40 (ce qui permet un découpage \textit{facile}).
+
+\begin{filecontents*}[overwrite]{PAkoala.csv}
+A,A,A,A,A,A,A,H,H,H,A,A,A,A,A,H,H,H,A,A,A,A,A,A,A,A,A,H,H,H,H,A,A,H,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,H,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,H,A,A,A,A,A,H,A,A,A,A,A,A
+A,A,A,H,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,H,H,H,A,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,B,E,E,E,E,A,A,A,A,A,A,A,A,A,A,A,H,H,H,A,B,B,E,E,E,E,B,A,A,A,A,A,H
+A,A,H,A,A,A,A,B,E,E,E,E,E,A,A,A,A,A,A,A,A,A,A,H,H,H,B,E,E,E,E,E,E,B,B,A,A,A,A,H
+A,A,H,A,A,B,B,E,C,C,C,C,C,E,B,B,B,E,E,E,E,E,E,B,B,B,E,C,C,C,C,C,C,E,B,B,H,H,A,A
+A,A,H,A,B,E,D,D,D,D,B,D,C,C,E,E,E,E,C,C,C,C,E,E,E,E,E,C,D,B,B,D,D,D,E,B,H,A,A,A
+A,A,A,A,B,E,D,D,F,F,D,B,D,C,C,E,C,C,C,C,C,C,C,C,E,C,C,D,B,D,D,F,F,D,E,B,A,A,A,H
+A,A,A,B,C,D,D,F,F,F,D,D,B,B,C,C,C,C,C,C,C,C,C,C,C,C,C,B,D,D,D,F,F,D,D,C,B,A,H,H
+A,A,A,B,C,D,F,F,F,F,F,D,D,D,C,C,C,C,C,C,C,C,C,C,C,C,C,D,D,F,F,F,F,F,D,C,B,A,H,H
+A,A,A,B,D,D,F,F,F,F,F,D,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,F,F,F,F,F,D,D,B,A,A,H
+A,A,A,B,D,D,G,F,F,F,F,D,C,C,B,B,B,C,C,B,B,C,C,B,B,B,C,C,D,F,F,F,F,G,D,D,B,A,A,A
+A,A,A,A,B,G,G,F,F,F,F,D,C,C,B,F,B,C,B,D,D,B,C,B,F,B,C,C,D,G,F,F,F,G,G,B,H,A,A,A
+A,A,A,A,A,B,G,G,G,F,G,D,C,C,C,B,B,C,B,D,D,B,C,B,B,C,C,C,D,G,G,F,G,G,B,H,H,H,A,A
+A,A,A,A,A,A,B,G,G,G,G,B,C,C,C,C,C,C,B,B,B,B,C,C,C,C,C,C,D,B,G,G,G,G,B,H,H,H,A,A
+A,A,A,A,A,A,A,B,B,B,B,B,C,C,C,C,C,C,B,B,B,B,C,C,C,C,C,C,D,B,B,B,B,B,A,A,H,H,A,A
+A,A,A,A,A,A,A,A,A,A,A,D,D,C,C,C,C,F,B,B,B,B,F,C,C,C,C,D,D,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,B,D,D,C,C,C,F,F,B,B,F,F,C,C,C,D,D,B,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,A,A,A,A,B,B,D,C,C,F,F,F,F,F,F,C,C,D,B,B,A,A,A,A,A,A,H,H,H,A,A,A
+A,A,A,A,H,H,H,H,A,A,A,A,B,B,D,D,D,G,G,G,G,G,G,D,D,D,D,B,A,A,A,A,A,A,A,H,H,H,A,A
+A,A,A,A,H,H,H,A,A,A,A,B,D,D,D,D,D,G,G,G,G,G,G,D,D,D,D,D,B,A,A,A,A,A,A,A,H,H,A,A
+A,A,A,H,A,A,A,A,A,A,B,C,D,D,D,G,G,G,D,D,D,D,G,G,G,D,D,D,C,B,A,H,H,A,A,A,A,H,A,A
+A,A,A,H,H,A,A,A,A,A,D,C,C,C,D,G,G,F,G,D,D,G,F,G,G,D,D,C,C,C,B,A,H,H,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,H,B,D,D,C,C,D,G,G,F,F,F,F,F,F,G,G,D,D,C,C,D,B,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,B,D,D,C,C,C,C,C,B,F,F,F,F,F,B,C,C,C,C,D,D,B,A,A,H,H,H,H,A,A,A
+A,A,A,H,H,A,A,A,A,B,D,D,C,C,C,C,C,C,B,F,F,F,B,C,C,C,C,C,D,D,B,A,A,A,A,H,H,A,A,A
+A,A,A,A,A,A,A,A,A,A,B,B,D,D,C,C,C,C,C,B,F,B,C,C,C,C,D,D,B,B,A,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,B,B,B,D,D,C,C,C,C,B,F,B,C,C,C,C,D,B,B,B,A,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,B,C,C,C,B,B,D,D,D,D,B,F,B,D,D,D,B,B,D,C,C,B,A,A,A,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,B,C,C,C,C,C,D,B,B,B,F,F,F,F,B,B,B,D,D,C,C,C,C,B,A,A,A,A,A,A,H,H
+A,A,A,A,A,A,A,A,B,C,C,C,C,C,D,D,D,G,G,F,F,G,G,D,D,D,D,C,C,C,C,B,A,A,A,A,A,A,H,H
+A,A,A,A,A,A,A,I,B,D,C,C,C,C,C,C,C,G,G,F,F,G,G,C,C,C,C,C,C,C,D,B,I,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,I,B,D,D,D,C,C,C,B,B,B,G,G,G,G,B,B,B,C,C,C,D,D,D,B,I,A,A,A,A,A,A,A
+A,A,A,A,A,H,A,I,I,B,D,D,D,D,D,C,C,C,B,D,D,B,C,C,C,C,D,D,D,B,B,I,I,A,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,I,B,B,D,D,D,D,D,C,C,B,D,D,B,C,C,C,D,D,D,D,B,I,I,A,A,A,A,A,A,A,A
+A,A,H,H,H,A,A,A,I,I,I,B,B,B,D,B,B,B,B,B,B,B,B,B,B,D,B,B,B,I,I,I,A,A,A,A,A,A,H,A
+A,A,H,H,H,A,A,A,A,I,I,I,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,I,I,I,A,A,A,A,A,A,A,H,A
+H,H,A,H,H,A,A,A,A,A,A,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,I,I,I,I,I,I,I,I,I,A,A,A,A,A,A,A,A,A,A,A,H,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A
+\end{filecontents*}
+
+\def\listcoulkoala{VertForet,Noir,GrisClair,GrisFonce,Beige,Blanc,BleuClair,VertClair,Marron}
+
+\begin{PresentationCode}{listing only}
+\begin{filecontents*}[overwrite]{PAkoala.csv}
+A,A,A,A,A,A,A,H,H,H,A,A,A,A,A,H,H,H,A,A,A,A,A,A,A,A,A,H,H,H,H,A,A,H,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,H,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,H,A,A,A,A,A,H,A,A,A,A,A,A
+A,A,A,H,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,H,H,H,A,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,B,E,E,E,E,A,A,A,A,A,A,A,A,A,A,A,H,H,H,A,B,B,E,E,E,E,B,A,A,A,A,A,H
+A,A,H,A,A,A,A,B,E,E,E,E,E,A,A,A,A,A,A,A,A,A,A,H,H,H,B,E,E,E,E,E,E,B,B,A,A,A,A,H
+A,A,H,A,A,B,B,E,C,C,C,C,C,E,B,B,B,E,E,E,E,E,E,B,B,B,E,C,C,C,C,C,C,E,B,B,H,H,A,A
+A,A,H,A,B,E,D,D,D,D,B,D,C,C,E,E,E,E,C,C,C,C,E,E,E,E,E,C,D,B,B,D,D,D,E,B,H,A,A,A
+A,A,A,A,B,E,D,D,F,F,D,B,D,C,C,E,C,C,C,C,C,C,C,C,E,C,C,D,B,D,D,F,F,D,E,B,A,A,A,H
+A,A,A,B,C,D,D,F,F,F,D,D,B,B,C,C,C,C,C,C,C,C,C,C,C,C,C,B,D,D,D,F,F,D,D,C,B,A,H,H
+A,A,A,B,C,D,F,F,F,F,F,D,D,D,C,C,C,C,C,C,C,C,C,C,C,C,C,D,D,F,F,F,F,F,D,C,B,A,H,H
+A,A,A,B,D,D,F,F,F,F,F,D,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,F,F,F,F,F,D,D,B,A,A,H
+A,A,A,B,D,D,G,F,F,F,F,D,C,C,B,B,B,C,C,B,B,C,C,B,B,B,C,C,D,F,F,F,F,G,D,D,B,A,A,A
+A,A,A,A,B,G,G,F,F,F,F,D,C,C,B,F,B,C,B,D,D,B,C,B,F,B,C,C,D,G,F,F,F,G,G,B,H,A,A,A
+A,A,A,A,A,B,G,G,G,F,G,D,C,C,C,B,B,C,B,D,D,B,C,B,B,C,C,C,D,G,G,F,G,G,B,H,H,H,A,A
+A,A,A,A,A,A,B,G,G,G,G,B,C,C,C,C,C,C,B,B,B,B,C,C,C,C,C,C,D,B,G,G,G,G,B,H,H,H,A,A
+A,A,A,A,A,A,A,B,B,B,B,B,C,C,C,C,C,C,B,B,B,B,C,C,C,C,C,C,D,B,B,B,B,B,A,A,H,H,A,A
+A,A,A,A,A,A,A,A,A,A,A,D,D,C,C,C,C,F,B,B,B,B,F,C,C,C,C,D,D,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,B,D,D,C,C,C,F,F,B,B,F,F,C,C,C,D,D,B,A,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,A,A,A,A,B,B,D,C,C,F,F,F,F,F,F,C,C,D,B,B,A,A,A,A,A,A,H,H,H,A,A,A
+A,A,A,A,H,H,H,H,A,A,A,A,B,B,D,D,D,G,G,G,G,G,G,D,D,D,D,B,A,A,A,A,A,A,A,H,H,H,A,A
+A,A,A,A,H,H,H,A,A,A,A,B,D,D,D,D,D,G,G,G,G,G,G,D,D,D,D,D,B,A,A,A,A,A,A,A,H,H,A,A
+A,A,A,H,A,A,A,A,A,A,B,C,D,D,D,G,G,G,D,D,D,D,G,G,G,D,D,D,C,B,A,H,H,A,A,A,A,H,A,A
+A,A,A,H,H,A,A,A,A,A,D,C,C,C,D,G,G,F,G,D,D,G,F,G,G,D,D,C,C,C,B,A,H,H,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,H,B,D,D,C,C,D,G,G,F,F,F,F,F,F,G,G,D,D,C,C,D,B,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,B,D,D,C,C,C,C,C,B,F,F,F,F,F,B,C,C,C,C,D,D,B,A,A,H,H,H,H,A,A,A
+A,A,A,H,H,A,A,A,A,B,D,D,C,C,C,C,C,C,B,F,F,F,B,C,C,C,C,C,D,D,B,A,A,A,A,H,H,A,A,A
+A,A,A,A,A,A,A,A,A,A,B,B,D,D,C,C,C,C,C,B,F,B,C,C,C,C,D,D,B,B,A,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,B,B,B,D,D,C,C,C,C,B,F,B,C,C,C,C,D,B,B,B,A,A,A,H,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,B,C,C,C,B,B,D,D,D,D,B,F,B,D,D,D,B,B,D,C,C,B,A,A,A,H,A,A,A,A,A
+A,A,A,A,A,A,A,A,B,C,C,C,C,C,D,B,B,B,F,F,F,F,B,B,B,D,D,C,C,C,C,B,A,A,A,A,A,A,H,H
+A,A,A,A,A,A,A,A,B,C,C,C,C,C,D,D,D,G,G,F,F,G,G,D,D,D,D,C,C,C,C,B,A,A,A,A,A,A,H,H
+A,A,A,A,A,A,A,I,B,D,C,C,C,C,C,C,C,G,G,F,F,G,G,C,C,C,C,C,C,C,D,B,I,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,I,B,D,D,D,C,C,C,B,B,B,G,G,G,G,B,B,B,C,C,C,D,D,D,B,I,A,A,A,A,A,A,A
+A,A,A,A,A,H,A,I,I,B,D,D,D,D,D,C,C,C,B,D,D,B,C,C,C,C,D,D,D,B,B,I,I,A,A,A,A,A,A,A
+A,A,A,A,A,H,H,H,I,B,B,D,D,D,D,D,C,C,B,D,D,B,C,C,C,D,D,D,D,B,I,I,A,A,A,A,A,A,A,A
+A,A,H,H,H,A,A,A,I,I,I,B,B,B,D,B,B,B,B,B,B,B,B,B,B,D,B,B,B,I,I,I,A,A,A,A,A,A,H,A
+A,A,H,H,H,A,A,A,A,I,I,I,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,I,I,I,A,A,A,A,A,A,A,H,A
+H,H,A,H,H,A,A,A,A,A,A,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,I,A,A,A,A,A,A,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,I,I,I,I,I,I,I,I,I,A,A,A,A,A,A,A,A,A,A,A,H,A,A,A,A
+A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A
+\end{filecontents*}
+
+%couleurs avec couleurs-fr
+\def\listcoulkoala%
+	{VertForet,Noir,GrisClair,GrisFonce,Beige,Blanc,BleuClair,VertClair,Marron}
+\end{PresentationCode}
+
+\subsection{Aide quant à la création du découpage}
+
+La première commande disponible est celle de l'affichage \textit{simplifié} de la grille de découpage (attention aux dimensions initiales pour un découpage \textit{idoine} !)
+
+La version étoilée affiche les grilles sous la forme \texttt{1.1}/\texttt{1.2}, etc.
+
+La version normale sous la forme \texttt{A1}, \texttt{A2}, etc.
+
+\smallskip
+
+L'argument \texttt{découpage} peut être donné sous la forme :
+%
+\begin{itemize}
+	\item \Cle{<nb lig bloc>x<nb col bloc>} pour spécifier la dimension des blocs ;
+	\item \Cle{<nb blocs V>+<nb blocs H>} pour spécifier le nombre de blocs.
+\end{itemize}
+
+\begin{PresentationCode}{}
+%découpage par blocs de taille 8x8
+\AideGrillePixelArtTikz{PAkoala.csv}{8x8}
+~~
+\PixelArtTikz[Correction,Unite=0.125,Codes=ABCDEFGHI,Couleurs={\listcoulkoala},Decoupage=8x8]{PAkoala.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%découpage par 4 blocs / ligne et 4 blocs / colonne
+\AideGrillePixelArtTikz*[2]{PAkoala.csv}{4+4}
+~~
+\PixelArtTikz[Correction,Unite=0.2,Codes=ABCDEFGHI,Couleurs={\listcoulkoala},Decoupage=4+4]{PAkoala.csv}
+\end{PresentationCode}
+
+\newpage
+
+\subsection{Affichage d'une partie unique}
+
+Une commande est disponible pour l'affichage d'\textit{un} bloc particulier du PixelArt.
+
+Les clés sont héritées de celle des commandes principales.
+
+\begin{PresentationCode}{}
+%bloc 1/1 pour un découpage 8x8
+\PixelArtTikzBloc[Unite=0.35,Codes=ABCDEFGHI]{PAkoala.csv}{8x8}{1/1}
+~~
+\PixelArtTikzBloc[Unite=0.35,Codes=ABCDEFGHI,Correction,Couleurs={\listcoulkoala}]{PAkoala.csv}{8x8}{1/1}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%bloc 2/4 pour un découpage 4+4
+\PixelArtTikzBloc[Unite=0.35,Codes=ABCDEFGHI]{PAkoala.csv}{4+4}{2/4}
+~~
+\PixelArtTikzBloc[Unite=0.35,Codes=ABCDEFGHI,Correction,Couleurs={\listcoulkoala}]{PAkoala.csv}{4+4}{2/4}
+\end{PresentationCode}
+
+\smallskip
+
+L'idée est ensuite d'utiliser cette commande d'insertion d'\textit{un} bloc pour créer l'énoncé avec \textit{les} grilles de découpage.
+
+Mais il existe une commande de création \textit{automatique} des grilles découpées !
+
+\newpage
+
+\subsection{Création automatique du découpage}
+
+Il existe également une commande dédiée pour le découpage automatique et la présentation automatique des petites grilles.
+
+\begin{PresentationCode}{}
+%découpage par blocs de 8x8
+\DecoupPixelArtTikz[Unite=0.3,Codes=ABCDEFGHI]{PAkoala.csv}{8x8}
+\end{PresentationCode}
+
+\pagebreak
+
+\begin{PresentationCode}{}
+%découpage en4 blocs par 4
+\DecoupPixelArtTikz[Unite=0.3,Codes=ABCDEFGHI,Correction,Couleurs={\listcoulkoala}]{PAkoala.csv}{4+4}
+\end{PresentationCode}
+
+\newpage
+
 \section{La commande pour un \textit{mini-}PixelArt}
 
 \subsection{Idée}
@@ -627,9 +845,118 @@ Le dernier argument, optionnel et entre \texttt{<...>}, permet quant à lui de p
 En ligne, on a \MiniPixelArt[Unite=5mm,Bord]{NBVOJV,JGP.NR}<baseline=(current bounding box.center)> ce miniPA.
 \end{PresentationCode}
 
+\newpage
+
+\section{Création automatique du tableau notice}
+
+\subsection{Idée}
+
+L'idée est de proposer une commande pour créer automatiquement le tableau de notice, avec coloration des cases.
+
+\smallskip
+
+Le package utilisé est \texttt{tabularray}, et le code propose deux présentations du tableau, sous forme horizontal ou vertical (les tableaux sur plusieurs lignes ne sont pas gérés\ldots)
+
+\begin{PresentationCode}{listing only}
+\TablCouleursPixelArt(*)[clés]{%
+	données1,%
+	données2,%
+	...
+}
+\end{PresentationCode}
+
+Les \Cle{données} sont à mettre sous la forme \Cle{<NomCouleur>/<CodeCouleur>/<CouleurPolice>/<Résultat>}.
+
+\subsection{Clés et exemples}
+
+La version \textit{étoilée} force le tableau en mode vertical.
+
+\smallskip
+
+Les \Cle{clés} disponibles pour cette commande sont :
+
+\begin{itemize}
+	\item la clé \Cle{Largeur}, pour spécifier les informations de largeur :
+	\begin{itemize}
+		\item sous la forme \Cle{auto} pour les adapter aux contenus (valeur par défaut) ;
+		\item sous la forme \Cle{largeurglobale} en mode H (les cases auront la même largeur) ;
+		\item sous la forme \Cle{largeurcolonne} ou \Cle{largeurcolonne1/largeurcolonne2} en mode V ;
+	\end{itemize}
+	\item la clé \Cle{Police} spécifier une police particulière.
+\end{itemize}
+
+\begin{PresentationCode}{}
+%par défaut
+\TablCouleursPixelArt{%
+	Marron/BrunIntense/Blanc/75,%
+	{Gris Clair}/GrisClair/Noir/{112,5},%
+	Vert Clair/VertClair/Noir/600,%
+	Noir/Noir/Blanc/9,%
+	Beige/Beige/Noir/15,%
+	Gris foncé/GrisFonce/Noir/{202,5},%
+	Bleu clair/BleuClair/Noir/288,%
+	Vert foncé/VertFonce/Blanc/10,%
+	Blanc/Blanc/Noir/55%
+}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%personnalisations
+\TablCouleursPixelArt[Largeur=\linewidth,Police=\small\sffamily]{%
+	Marron/BrunIntense/Blanc/75,%
+	{Gris Clair}/GrisClair/Noir/{112,5},%
+	Vert Clair/VertClair/Noir/600,%
+	Noir/Noir/Blanc/9,%
+	Beige/Beige/Noir/15,%
+	Gris foncé/GrisFonce/Noir/{202,5},%
+	Bleu clair/BleuClair/Noir/288,%
+	Vert foncé/VertFonce/Blanc/10,%
+	Blanc/Blanc/Noir/55%
+}
+\end{PresentationCode}
+
+\pagebreak
+
+\begin{PresentationCode}{}
+%personnalisations
+\TablCouleursPixelArt*[Largeur=3cm/]{%
+	Marron/BrunIntense/Blanc/75,%
+	{Gris Clair}/GrisClair/Noir/{112,5},%
+	Vert Clair/VertClair/Noir/600,%
+	Noir/Noir/Blanc/9,%
+	Beige/Beige/Noir/15,%
+	Gris foncé/GrisFonce/Noir/{202,5},%
+	Bleu clair/BleuClair/Noir/288,%
+	Vert foncé/VertFonce/Blanc/10,%
+	Blanc/Blanc/Noir/55%
+}
+\end{PresentationCode}
+
+\subsection{Commande simplifiée (??) pour les cases}
+
+Il est également possible de créer le tableau \textit{manuellement}, avec une commande \textit{simplifiée} pour la création des cases.
+
+\begin{PresentationCode}{listing only}
+%dans un environnement tblr, chargé avec [expand=\expanded] et \expanded !
+\cctblr[couleur police]{couleur fond}{case}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+\begin{tblr}[expand=\expanded]{width=\linewidth,colspec={*{5}{Q[m,l]}},hlines,vlines}
+	\expanded{\cctblr[Blanc]{BrunIntense}{Marron}} &
+	\expanded{\cctblr{GrisClair}{Gris clair}} &
+	\expanded{\cctblr{VertClair}{Vert clair}} &
+	\expanded{\cctblr[Blanc]{Noir}{Noir}} &
+	\ldots \\
+	75 & {112,5} & 600 & 9 & \ldots \\
+\end{tblr}
+\end{PresentationCode}
+
 \pagebreak
 
 \part{Historique}
+
+\verb|v0.1.3|~:~~~~Possibilité de créer des PixelArts collaboratifs
 
 \verb|v0.1.2|~:~~~~Possibilité de créer des \textit{mini-}PixelArts
 
