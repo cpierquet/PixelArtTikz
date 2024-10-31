@@ -45,9 +45,9 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.3}
-\def\TPdate{11/04/2024}
-
+\def\TPversion{0.1.5}
+\def\TPdate{31/10/2024}
+\usepackage{minted2}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
 \NewTCBListing{PresentationCode}{ O{blue} m }{%
@@ -453,6 +453,33 @@ In the following example, the \textit{symbols} to print can't be used for the \t
 
 \pagebreak
 
+\subsection{Symbols within list(s)}
+
+List of symbols can be given within list(s), picked randomly.
+
+\begin{PresentationCode}{}
+\begin{filecontents*}[overwrite]{testlist.csv}
+A,B,C,A
+A,B,B,C
+B,A,C,B
+C,A,B,C
+\end{filecontents*}
+
+\textbf{Notice : }
+
+Multiples of 5 : red\\
+Multiples of 3 : green\\
+Multiples of 2 : blue
+
+\PixlArtTikz[Codes=ABC,Symbols={5§25§35,3§9§21§27,2§4§8§14§16},Symb,Style=\large\sffamily,Unit=0.85]{testlist.csv}
+\hspace{5mm}
+\PixlArtTikz[Codes=ABC,Symbols={5§25§35,3§9§21§27,2§4§8§14§16},Symb,Style=\large\sffamily,Unit=0.85]{testlist.csv}
+\hspace{5mm}
+\PixlArtTikz[Codes=ABC,Colors={red,green,blue},Correction,Style=\large\sffamily,Unit=0.85]{testlist.csv}
+\end{PresentationCode}
+
+\pagebreak
+
 \subsection{Starred macro}
 
 The starred macro \texttt{\textbackslash PixlArtTikz*} is to be used within an already created environment. It can be useful for adding code after the PixelArt.
@@ -727,7 +754,163 @@ A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,H,H,A,A,A,A
 
 \pagebreak
 
+\section{Anamorphic cylinder PixelArt}
+
+\subsection{Idea}
+
+The idea is to provide something to create PixelArt with the aim of using a cylindrical anamorphosis.
+
+On \url{https://www.youtube.com/watch?v=PT8KUozBg3I}, there is a video \textit{demonstration}, proposed by Jean-Yves Labouche.
+
+The overall operation is similar to that of the \textit{main} command, however there are some adjustments:
+
+\begin{itemize}
+	\item the possibility of giving the file \textsf{csv} in \textit{normal} or \textit{inverted} mode;
+	\item the dimensions (width \& middle) must be specified to produce the PixelArt;
+	\item the command is standalone (for the moment) so no addition(s) later.
+\end{itemize}
+
+\begin{PresentationCode}{listing only}
+\PixlArtTikzCylindric[keys]{file.csv}
+\end{PresentationCode}
+
+The files illustrating this paragraph are given below.
+
+\begin{PresentationCode}{}
+%version with inverted data
+\begin{filecontents*}[overwrite]{PAyoda.csv}
+E,E,E,A,A,E,A,A,E,D
+E,E,E,F,F,F,F,F,E,D
+E,E,E,F,F,C,F,F,E,D
+E,A,F,F,C,C,C,F,F,A
+E,A,F,F,C,C,C,F,F,A
+E,E,E,A,A,A,A,A,E,E
+E,E,E,A,A,A,A,A,E,E
+E,E,A,E,B,A,B,E,A,E
+E,A,A,A,A,A,A,A,A,A
+E,E,E,A,A,A,A,A,E,E
+\end{filecontents*}
+
+\PixlArtTikz[%
+	Codes=ABCDEF,
+	Colors={green,black,brown,white,brown!75!black,lightgray},
+	Correction,Unit=0.35]%
+	{PAyoda.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%version with normal data
+\begin{filecontents*}{PAsorciere.csv}
+V,V,V,V,N,N,N,V,V,V
+V,V,V,N,N,N,N,N,V,V
+N,N,N,N,N,N,N,N,N,N
+V,V,V,G,G,G,O,O,V,V
+V,V,V,J,J,G,O,O,O,V
+V,V,G,N,J,G,O,O,O,V
+V,G,G,G,G,G,O,O,O,O
+V,V,N,N,N,G,O,O,O,O
+V,V,G,G,G,G,O,O,O,O
+V,V,V,V,N,N,O,O,O,O
+\end{filecontents*}
+
+\PixlArtTikz[%
+	Codes=VNGOJ,
+	Colors={purple!50,black,green,orange,yellow},
+	Correction,Unit=0.35]%
+	{PAsorciere.csv}
+\end{PresentationCode}
+
+\subsection{Keys and options}
+
+The first argument, \textit{optional} and between \texttt{[...]} offers \textsf{Keys} necessary for the command to function properly:
+
+\begin{itemize}
+	\item the key \Cle{Width} which defines the width (radius in cm) of the rendering;\hfill{}default \textsf{6}
+	\item the key \Cle{Center} which defines the width (radius in cm) of the \textit{middle};\hfill{}default \textsf{1.25}
+	\item the key \Cle{Codes} contains the \textit{string} of the \textit{simple} codes of the file \textsf{csv};
+	\item the key \Cle{Colors} which contains the \textit{list} of associated colors;
+	\item the key \Cle{Symbols} which contains the \textit{possible list} of alternative characters to display in the boxes;
+	\item the key \Cle{Style} which allows you to specify the style of characters. \hfill{}default \textsf{normalsize}
+	\item the Boolean key \Cle{Correction} which allows you to color the PixelArt;\hfill{}default \textsf{false}
+	\item the Boolean key \Cle{Symb} which allows you to display the \textit{alternative} characters;\hfill{}default \textsf{false}
+	\item the Boolean key \Cle{Solution} which displays the solution (with \textit{mirror} effect);\hfill{}default \textsf{false}
+	\item the Boolean key \Cle{Swap} which allows you to specify the data type (\Cle{true} := normal; \Cle{false} := inverted).
+	
+	\hfill{}default \textsf{false}
+\end{itemize}
+
+The second argument, \textit{mandatory}, is the name of the \textsf{csv} file to use.
+
+\pagebreak
+
+\subsection{Example with inverted data (Yoda)}
+
+In this paragraph, we use the data \texttt{PAyoda}, which corresponds to the \textit{inverted} layout, so the key \Cle{Swap} is not necessary.
+
+\begin{PresentationCode}{}
+%classic version
+\PixlArtTikzCylindric[Codes=ABCDEF,Style=\small\ttfamily]{PAyoda.csv}
+
+%version with 'symbols'
+\PixlArtTikzCylindric[Codes=ABCDEF,Symbols={1,2,3,4,5,6},Symb,Style=\small\ttfamily]{PAyoda.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%Fix and solution
+\begin{tabular}{c}
+	\PixlArtTikzCylindric[%
+		Codes=ABCDEF,
+		Colors={green,black,brown,white,brown!75!black,lightgray},
+		Solution]%
+		{PAyoda.csv}
+	\\
+	\PixlArtTikzCylindric[%
+		Codes=ABCDEF,
+		Colors={green,black,brown,white,brown!75!black,lightgray},
+		Correction]%
+		{PAyoda.csv}
+\end{tabular}
+\end{PresentationCode}
+
+\pagebreak
+
+\subsection{Example with classic data (Witch)}
+
+In this paragraph, we use the data \texttt{PAsorciere}, which corresponds to the \textit{normal} layout, so the key \Cle{Swap} is necessary.
+
+\begin{PresentationCode}{}
+	%classic version
+	\PixlArtTikzCylindric[%
+	Width=4,Center=1,Codes=VNGOJ,
+	Colors={purple!50,black,green,orange,yellow},
+	Swap,Style=\ttfamily\scriptsize]%
+	{PAsorciere.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%Correction and solution
+\begin{tabular}{c}
+	\PixlArtTikzCylindric[%
+		Width=4,Center=0.75,Codes=VNGOJ,
+		Colors={purple!50,black,green,orange,yellow},
+		Swap,Solution]%
+		{PAsorciere.csv}
+	\\
+	\PixlArtTikzCylindric[%
+		Width=4,Center=0.75,Codes=VNGOJ,
+		Colors={purple!50,black,green,orange,yellow},
+		Swap,Correction]%
+		{PAsorciere.csv}
+\end{tabular}
+\end{PresentationCode}
+
+\newpage
+
 \part{History}
+
+\verb|v0.1.5|~:~~~~Symbols can be given with list(s) + Enhancements of internal code
+
+\verb|v0.1.4|~:~~~~Anamorphic cylinder PixelArts
 
 \verb|v0.1.3|~:~~~~Cut PixelArts within several PixelArts
 

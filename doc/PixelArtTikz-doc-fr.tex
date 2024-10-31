@@ -44,9 +44,10 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.3}
-\def\TPdate{11 avril 2024}
+\def\TPversion{0.1.5}
+\def\TPdate{31 octobre 2024}
 
+\usepackage{minted2}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted}
 \NewTCBListing{PresentationCode}{ O{blue} m }{%
@@ -119,6 +120,10 @@
 
 \smallskip
 
+{$\blacktriangleright$~~Des PixelArts avec anamorphose cylindrique, des \textit{mini-}PixelArts.}
+
+\smallskip
+
 \vspace{1cm}
 
 \begin{center}
@@ -156,10 +161,6 @@
 \end{center}
 
 \vspace{0.5cm}
-
-%\hfill{}\textit{Merci aux membres du groupe \faFacebook{} du \og Coin \LaTeX{} \fg{} pour leur aide et leurs idées !}
-
-%\hfill{}\textit{Merci à Denis Bitouzé et à Patrick Bideault pour leurs retours et idées !}
 
 \vfill
 
@@ -247,7 +248,7 @@ Il charge les packages et librairies suivantes :
 
 \begin{itemize}
 	\item \texttt{tikz}, \texttt{xintexpr} et \texttt{xinttools};
-	\item \texttt{xstring}, \texttt{xparse}, \texttt{simplekv} et \texttt{listofitems} ;
+	\item \texttt{xstring}, \texttt{simplekv} et \texttt{listofitems} ;
 	\item \texttt{multicol} (pour le \textit{découpage}).
 \end{itemize}
 
@@ -287,7 +288,9 @@ Il existe trois manières de représenter un PixelArt :
 \AideGrillePixelArtTikz(*)[Echelle]{fichier.csv}{découpage}
 \end{PresentationCode}
 
-\section{Les couleurs}
+\section{Compléments}
+
+\subsection{Les couleurs}
 
 Concernant les couleurs, l'utilisateur utilisera celles disponibles avec les packages chargés.
 
@@ -327,7 +330,7 @@ Les couleurs disponibles sans autre package sont donc :
 
 Pour des couleurs \textit{francisées}, le package \texttt{couleurs-fr} pourra être utile.
 
-\section{Petit aparté sur les fichiers csv}
+\subsection{Petit aparté sur les fichiers csv}
 
 \textsf{CSV} désigne un format de fichiers dont le rôle est de présenter des données séparées par des virgules. Il s'agit d'une manière simplifiée d'afficher des données afin de les rendre transmissibles d'un programme à un autre.
 
@@ -341,7 +344,7 @@ Il \underline{doit} être préparé avec des caractères (codes) \textit{simples
 
 \pagebreak
 
-\part{Commandes et environnement}
+\part{Commandes principales}
 
 \section{La commande principale}
 
@@ -361,10 +364,10 @@ On peut donc commencer par créer le fichier \textsf{csv} qui sera lu et interpr
 \begin{PresentationCode}{}
 %déclaration du fichier csv
 \begin{filecontents*}[overwrite]{base.csv}
-	A,B,C,D
-	A,B,D,C
-	B,A,D,C
-	C,A,B,D
+A,B,C,D
+A,B,D,C
+B,A,D,C
+C,A,B,D
 \end{filecontents*}
 \end{PresentationCode}
 
@@ -498,6 +501,35 @@ Dans l'exemple suivant, les \textit{symboles} à afficher ne peuvent pas servir 
 \PixelArtTikz[Codes=ABCDFJ,Symboles={1,2,3,4,6,10},Symb,Style=\tiny\sffamily,Unite=0.35]{cap.csv}
 ~~
 \PixelArtTikz[Codes=ABCDFJ,Couleurs={red,brown,yellow,black,blue,gray},Correction,Unite=0.35]{cap.csv}
+\end{PresentationCode}
+
+\pagebreak
+
+\subsection{Symboles dans une liste}
+
+À noter qu'il est possible de donner comme symboles des listes dans lesquelles seront choisies aléatoirement les symboles.
+
+\begin{PresentationCode}{}
+%codes à afficher, avec utiliser des symboles "alétaoires" dans une liste
+
+\begin{filecontents*}[overwrite]{testlist.csv}
+A,B,C,A
+A,B,B,C
+B,A,C,B
+C,A,B,C
+\end{filecontents*}
+
+\textbf{Notice : }
+
+Multiples de 5 : Rouge\\
+Multiples de 3 : Vert\\
+Multiples de 2 : Bleu
+
+\PixelArtTikz[Codes=ABC,Symboles={5§25§35,3§9§21§27,2§4§8§14§16},Symb,Style=\large\sffamily,Unite=0.85]{testlist.csv}
+\hspace{5mm}
+\PixelArtTikz[Codes=ABC,Symboles={5§25§35,3§9§21§27,2§4§8§14§16},Symb,Style=\large\sffamily,Unite=0.85]{testlist.csv}
+\hspace{5mm}
+\PixelArtTikz[Codes=ABC,Couleurs={red,green,blue},Correction,Style=\large\sffamily,Unite=0.85]{testlist.csv}
 \end{PresentationCode}
 
 \pagebreak
@@ -784,6 +816,160 @@ Il existe également une commande dédiée pour le découpage automatique et la 
 
 \newpage
 
+\part{Commandes complémentaires}
+
+\section{PixelArt et anamorphose cylindrique}
+
+\subsection{Idée}
+
+L'idée est de proposer de quoi créer un PixelArt dans le but d'utiliser une anamorphose cylindrique.
+
+Sur \url{https://www.youtube.com/watch?v=PT8KUozBg3I}, il y a une vidéo \textit{démonstration}, proposée par Jean-Yves Labouche.
+
+Le fonctionnement global est similaire à celui de la commande \textit{principale}, il existe cependant quelques ajustements :
+
+\begin{itemize}
+	\item la possibilité de donner le fichier \textsf{csv} en mode \textit{normal} ou \textit{inversé} ;
+	\item les dimensions (largeur \& milieu) sont à préciser pour produire le PixelArt ;
+	\item la commande est autonome (pour le moment) donc pas d'ajout(s) ultérieurement.
+\end{itemize}
+
+\begin{PresentationCode}{listing only}
+\PixelArtTikzCylindre[clés]{fichier.csv}
+\end{PresentationCode}
+
+Les fichiers illustrant ce paragraphe sont donnés ci-dessous.
+
+\begin{PresentationCode}{}
+%version avec données inversées
+\begin{filecontents*}[overwrite]{PAyoda.csv}
+E,E,E,A,A,E,A,A,E,D
+E,E,E,F,F,F,F,F,E,D
+E,E,E,F,F,C,F,F,E,D
+E,A,F,F,C,C,C,F,F,A
+E,A,F,F,C,C,C,F,F,A
+E,E,E,A,A,A,A,A,E,E
+E,E,E,A,A,A,A,A,E,E
+E,E,A,E,B,A,B,E,A,E
+E,A,A,A,A,A,A,A,A,A
+E,E,E,A,A,A,A,A,E,E
+\end{filecontents*}
+
+\PixelArtTikz[%
+	Codes=ABCDEF,
+	Couleurs={green,black,brown,white,brown!75!black,lightgray},
+	Correction,Unite=0.35]%
+	{PAyoda.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%version avec données normales
+\begin{filecontents*}{PAsorciere.csv}
+V,V,V,V,N,N,N,V,V,V
+V,V,V,N,N,N,N,N,V,V
+N,N,N,N,N,N,N,N,N,N
+V,V,V,G,G,G,O,O,V,V
+V,V,V,J,J,G,O,O,O,V
+V,V,G,N,J,G,O,O,O,V
+V,G,G,G,G,G,O,O,O,O
+V,V,N,N,N,G,O,O,O,O
+V,V,G,G,G,G,O,O,O,O
+V,V,V,V,N,N,O,O,O,O
+\end{filecontents*}
+
+\PixelArtTikz[%
+	Codes=VNGOJ,
+	Couleurs={violet!50,black,green,orange,yellow},
+	Correction,Unite=0.35]%
+	{PAsorciere.csv}
+\end{PresentationCode}
+
+\subsection{Clés et options}
+
+Le premier argument, \textit{optionnel} et entre \texttt{[...]} propose des \textsf{Clés} nécessaires au bon fonctionnement de la commande :
+
+\begin{itemize}
+	\item la clé \Cle{Largeur} qui définir la largeur (rayon en cm) du rendu ;\hfill{}défaut \textsf{6}
+	\item la clé \Cle{Centre} qui définir la largeur (rayon en cm) du \textit{milieu} ;\hfill{}défaut \textsf{1.25}
+	\item la clé \Cle{Codes} contient la \textit{chaîne} des codes \textit{simples} du  fichier \textsf{csv} ;
+	\item la clé \Cle{Couleurs} qui contient la \textit{liste} des couleurs associées ;
+	\item la clé \Cle{Symboles} qui contient la \textit{liste éventuelles} des caractères alternatifs à afficher dans les cases ;
+	\item la clé \Cle{Style} qui permet de spécifier le style des caractères. \hfill{}défaut \textsf{normalsize}
+	\item la clé booléenne \Cle{Correction} qui permet de colorier le PixelArt ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{Symb} qui permet d'afficher les caractères \textit{alternatifs} ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{Solution} qui permet d'afficher la solution (avec effet \textit{mirroir}) ;\hfill{}défaut \textsf{false}
+	\item la clé booléenne \Cle{Swap} qui permet de spécifier le type de données (\Cle{true} := normal ; \Cle{false} := inversé).
+	
+	\hfill{}défaut \textsf{false}
+\end{itemize}
+
+Le deuxième argument, \textit{obligatoire}, est le nom du fichier \textsf{csv} à utiliser.
+
+\pagebreak
+
+\subsection{Exemple avec données inversées (Yoda)}
+
+Dans ce paragraphe, on utilise les données \texttt{PAyoda}, qui correspondent à la disposition \textit{inversée}, donc la clé \Cle{Swap} n'est pas nécessaire.
+
+\begin{PresentationCode}{}
+%version classique
+\PixelArtTikzCylindre[Codes=ABCDEF,Style=\small\ttfamily]{PAyoda.csv}
+
+%version avec 'symboles'
+\PixelArtTikzCylindre[Codes=ABCDEF,Symboles={1,2,3,4,5,6},Symb,Style=\small\ttfamily]{PAyoda.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%Correction et solution
+\begin{tabular}{c}
+	\PixelArtTikzCylindre[%
+		Codes=ABCDEF,
+		Couleurs={green,black,brown,white,brown!75!black,lightgray},
+		Solution]%
+		{PAyoda.csv}
+	\\
+	\PixelArtTikzCylindre[%
+		Codes=ABCDEF,
+		Couleurs={green,black,brown,white,brown!75!black,lightgray},
+		Correction]%
+		{PAyoda.csv}
+\end{tabular}
+\end{PresentationCode}
+
+\pagebreak
+
+\subsection{Exemple avec données classiques (Sorcière)}
+
+Dans ce paragraphe, on utilise les données \texttt{PAsorciere}, qui correspondent à la disposition \textit{normale}, donc la clé \Cle{Swap} est nécessaire.
+
+\begin{PresentationCode}{}
+%version classique
+\PixelArtTikzCylindre[%
+	Largeur=4,Centre=1,Codes=VNGOJ,
+	Couleurs={violet!50,black,green,orange,yellow},
+	Swap,Style=\ttfamily\scriptsize]%
+	{PAsorciere.csv}
+\end{PresentationCode}
+
+\begin{PresentationCode}{}
+%Correction et solution
+\begin{tabular}{c}
+	\PixelArtTikzCylindre[%
+		Largeur=4,Centre=0.75,Codes=VNGOJ,
+		Couleurs={violet!50,black,green,orange,yellow},
+		Swap,Solution]%
+		{PAsorciere.csv}
+	\\
+	\PixelArtTikzCylindre[%
+		Largeur=4,Centre=0.75,Codes=VNGOJ,
+		Couleurs={violet!50,black,green,orange,yellow},
+		Swap,Correction]%
+		{PAsorciere.csv}
+\end{tabular}
+\end{PresentationCode}
+
+\newpage
+
 \section{La commande pour un \textit{mini-}PixelArt}
 
 \subsection{Idée}
@@ -955,6 +1141,10 @@ Il est également possible de créer le tableau \textit{manuellement}, avec une 
 \pagebreak
 
 \part{Historique}
+
+\verb|v0.1.5|~:~~~~Symboles sous forme de liste(s) (éléments tirés aléatoirement) + Amélioration du traitement
+
+\verb|v0.1.4|~:~~~~PixelArts avec anamorphose cylindrique
 
 \verb|v0.1.3|~:~~~~Possibilité de créer des PixelArts collaboratifs
 
